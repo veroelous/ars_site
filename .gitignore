@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Variáveis de ambiente (segredos). Use .env.example como modelo.
+.env
+.env*.local
+
+# Leads recebidos pelos formulários — NUNCA versionar dados de contato.
+data/
+
+.DS_Store
+npm-debug.log*
