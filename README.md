@@ -80,6 +80,23 @@ O site precisa de um servidor Node.js, por causa das rotas de formulário e de d
 - **Vercel:** importe o repositório e configure as variáveis. Use `LEADS_STORAGE=webhook`.
 - **VPS ou hospedagem Node (por exemplo, Hostinger com Node.js):** `npm ci && npm run build && npm start`, atrás de um proxy HTTPS. Pode usar `LEADS_STORAGE=file` com `LEADS_DIR` apontando para uma pasta persistente fora do diretório publicado.
 
+### Host4 (cPanel com "Setup Node.js App")
+
+1. **Setup Node.js App → Create Application:** Node 20 ou 22, modo *Production*, raiz da aplicação `ars_app` (fora da pasta pública), URL do domínio desejado e arquivo de inicialização `server.js`.
+2. **Terminal do cPanel:** clone a branch dentro de `~/ars_app`, ative o ambiente Node com o comando mostrado no topo da tela do app e rode:
+
+   ```bash
+   npm install
+   ```
+
+   ```bash
+   SITE_URL=https://dev.arsiluminacao.com.br SITE_NOINDEX=true npm run build
+   ```
+
+   `SITE_URL` e `SITE_NOINDEX` entram no build, então precisam estar no comando. Em produção, use o domínio final e `SITE_NOINDEX=false`.
+3. **Variáveis de ambiente** na tela do app: `NODE_ENV=production`, `SITE_URL`, `SITE_NOINDEX`, `CATALOG_TOKEN_SECRET`, `LEADS_STORAGE=file` e `LEADS_DIR=/home/USUARIO/ars_leads`.
+4. Clique em **Restart**. Para atualizar depois: `git pull`, `npm install`, o mesmo build e Restart.
+
 Variáveis obrigatórias em produção: `SITE_URL` e `CATALOG_TOKEN_SECRET`. A lista completa está em `.env.example`.
 
 ## Estrutura

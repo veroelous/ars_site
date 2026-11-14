@@ -4,6 +4,7 @@ import "./globals.css";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { site } from "@/config/site";
+import { noIndex } from "@/lib/indexing";
 
 const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     template: `%s | ${site.name}`,
   },
   description: site.description,
+  robots: noIndex ? { index: false, follow: false } : undefined,
   openGraph: {
     type: "website",
     locale: "pt_BR",
