@@ -16,13 +16,20 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      HAS_FTP: ${{ secrets.FTP_SERVER != '' && secrets.FTP_USERNAME != '' && secrets.FTP_PASSWORD != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Conferir sintaxe do PHP
         run: find public_html -name "*.php" -print0 | xargs -0 -n1 php -l
 
+      - name: FTP ainda não configurado
+        if: env.HAS_FTP != 'true'
+        run: echo "::notice::Envio pulado. Cadastre FTP_SERVER, FTP_USERNAME e FTP_PASSWORD em Settings > Secrets and variables > Actions."
+
       - name: Enviar por FTP
+        if: env.HAS_FTP == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
