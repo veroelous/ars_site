@@ -1,15 +1,9 @@
-node_modules/
-.next/
-out/
-next-env.d.ts
-*.tsbuildinfo
-
-# Variáveis de ambiente (segredos). Use .env.example como modelo.
-.env
-.env*.local
-
-# Leads recebidos pelos formulários — NUNCA versionar dados de contato.
-data/
+# Configuração com segredos e dados recebidos — NUNCA versionar.
+public_html/private/config.php
+public_html/private/leads/
+public_html/private/cache/
+public_html/private/ratelimit/
+ars_private/
 
 .DS_Store
-npm-debug.log*
+*.log

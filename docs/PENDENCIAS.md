@@ -6,10 +6,10 @@ Itens que dependem de **aprovação da ARS**, de **credenciais** ou de **configu
 
 | Item | Valor atual | Onde alterar |
 |---|---|---|
-| WhatsApp (botão flutuante e página de contato) | `+55 19 99696-5662` (link `wa.me` da Home atual e bio do Instagram) | `config/site.ts` → `whatsapp.number` |
-| Endereço | Estrada de Joaquim de Souza Siqueira, 2099, Oratório, Socorro/SP, CEP 13960-000 | `config/site.ts` → `address` |
-| E-mail comercial | `comercial@arsiluminacao.com.br` (**já aprovado**) | `config/site.ts` → `email` |
-| Texto do consentimento LGPD | Baseado no aviso de privacidade do formulário atual | `lib/consent.ts` |
+| WhatsApp (botão flutuante e página de contato) | `+55 19 99696-5662` (link `wa.me` da Home atual e bio do Instagram) | `public_html/includes/site.php` → `whatsapp` |
+| Endereço | Estrada de Joaquim de Souza Siqueira, 2099, Oratório, Socorro/SP, CEP 13960-000 | `public_html/includes/site.php` → `address` |
+| E-mail comercial | `comercial@arsiluminacao.com.br` (**já aprovado**) | `public_html/includes/site.php` → `email` |
+| Texto do consentimento LGPD | Baseado no aviso de privacidade do formulário atual | `public_html/includes/site.php` → `consent` |
 
 Descartados explicitamente e **não usados**: o telefone `(19) 98304-7385` e o endereço da Rua São João, 33.
 
@@ -19,30 +19,30 @@ A Expolux terminou. No novo site:
 
 - A Hero não tem chamada, data, local nem link do evento.
 - O rodapé trocou a coluna "Expolux 2026 · 15 a 18 de setembro" pela coluna **E-mail**, como já era nas páginas internas.
-- **Falta revisar:** o texto da seção do Instagram na Home ainda diz *"…os lançamentos e a presença da ARS na Expolux."* O texto oficial foi mantido de propósito, até a ARS decidir. Arquivo: `components/InstagramSection.tsx`.
+- **Falta revisar:** o texto da seção do Instagram na Home ainda diz *"…os lançamentos e a presença da ARS na Expolux."* O texto oficial foi mantido de propósito, até a ARS decidir. Arquivo: `public_html/index.php`.
 
 ## 3. Conteúdo marcado como pendente (`[ ... ]`)
 
 O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem com o mesmo marcador entre colchetes, destacado em laranja claro. Nada foi inventado.
 
-**A ARS** (`app/a-ars/page.tsx`)
+**A ARS** (`public_html/a-ars/index.php`)
 - Mídia institucional da Hero (fábrica, equipe ou processo)
 - Texto da história (fundação, evolução, marcos) e imagem histórica
 - Textos dos cards Desenvolvimento, Processo produtivo e Fabricação
 - Texto comercial para lojistas, especificadores, arquitetos e distribuidores, e a mídia de processo
 
-**Produtos** (`app/produtos/page.tsx`)
+**Produtos** (`public_html/produtos/index.php`)
 - Mídia de abertura
 - Imagem e descrição de cada categoria: Pendentes, Perfis de LED, Spots, Spots para trilho, Arandelas, Plafons e plafoniers
 - Conteúdo da ficha técnica, do PDF por produto e de aplicações e compra
 - Texto comercial e mídia de aplicação
 - No WordPress, "Ver categoria" apontava para `/pendentes/`, `/spots/` e outras páginas que **não existem**. Aqui o botão leva à categoria correspondente em `/categorias-de-luminarias/` até essas páginas serem criadas.
 
-**Categorias** (`app/categorias-de-luminarias/page.tsx`)
+**Categorias** (`public_html/categorias-de-luminarias/index.php`)
 - Mídia de abertura, mais imagem e descrição de: Pendentes, Perfis de LED, Spots e spots para trilho, Arandelas, Plafons, Plafoniers
 - Ficha técnica e aplicações e compra
 
-**Contato e orçamento** (`app/contato-e-orcamento/page.tsx`)
+**Contato e orçamento** (`public_html/contato-e-orcamento/index.php`)
 - Mídia da Hero
 - Texto comercial (público atendido, prazo de retorno, canais)
 - Texto de conversão e mídia do bloco final
@@ -50,23 +50,26 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 
 ## 4. Credenciais e configuração de conta
 
-| O quê | Para quê | Variável |
+Tudo fica no `config.php` privado do servidor (modelo em `public_html/includes/config.example.php`), nunca no Git.
+
+| O quê | Para quê | Chave no config.php |
 |---|---|---|
-| Segredo do link do catálogo | Assinar o download (obrigatório em produção) | `CATALOG_TOKEN_SECRET` |
-| Destino dos leads | Webhook (Make/Zapier/n8n/Planilhas) ou pasta persistente no servidor | `LEADS_STORAGE`, `LEADS_WEBHOOK_URL`, `LEADS_DIR` |
-| Usuário e senha da exportação CSV | Baixar os leads em `/api/admin/leads/` | `ADMIN_USER`, `ADMIN_PASSWORD` |
-| Token do Instagram | Feed dinâmico das 3 últimas publicações | `INSTAGRAM_ACCESS_TOKEN` |
-| URL do domínio final | SEO, Open Graph, sitemap | `SITE_URL` |
+| Segredo do link do catálogo | Assinar o download (obrigatório) | `catalog_secret` |
+| E-mail que recebe os avisos | Aviso imediato de cada novo contato | `notify_email`, `mail_from` |
+| Usuário e senha da exportação | Baixar os contatos em `/admin/leads.php` | `admin_user`, `admin_pass_hash` |
+| Token do Instagram | Feed dinâmico das 3 últimas publicações | `instagram_token` |
+| URL do domínio final | SEO, Open Graph, sitemap | `site_url` |
+| Acesso FTP da Host4 | Publicação automática pelo GitHub | segredos `FTP_*` no GitHub |
 
 ### Instagram: como obter e renovar o token
 
 1. A conta `@ars.iluminacao` precisa ser **profissional** (Empresa ou Criador).
 2. Em developers.facebook.com, crie um app do tipo *Empresa* e adicione o produto **Instagram → API com login do Instagram**.
 3. Adicione a conta como testadora ou gere o token pelo painel, com a permissão `instagram_business_basic`.
-4. Troque o token curto por um de **longa duração** (60 dias) e coloque-o em `INSTAGRAM_ACCESS_TOKEN`.
+4. Troque o token curto por um de **longa duração** (60 dias) e coloque-o em `instagram_token` no `config.php`.
 5. Renove antes de vencer, com `GET https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=TOKEN`. O ideal é automatizar com uma tarefa agendada mensal.
 
-Enquanto não houver token, o site mostra os embeds definidos em `config/instagram-fallback.ts`.
+Enquanto não houver token, o site mostra os embeds definidos em `ARS_INSTAGRAM_FALLBACK` (`public_html/includes/site.php`).
 
 ## 5. Migração dos leads antigos
 

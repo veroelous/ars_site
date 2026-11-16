@@ -1,112 +1,84 @@
 # ARS Iluminação — site institucional
 
-Reconstrução do site público `oficial.arsiluminacao.com.br` (WordPress + Elementor) em **Next.js**, a partir do pacote de handoff de 13/11/2026 (`docs/referencia/`).
+Site da ARS Iluminação em **HTML, CSS, JavaScript puro e PHP 8.2**, feito para hospedagem cPanel convencional (Host4). Não usa Node.js, npm, build nem banco de dados: publicar é copiar a pasta `public_html/`.
 
 ## Páginas
 
 | Página | URL | Arquivo |
 |---|---|---|
-| Início | `/` | `app/page.tsx` |
-| A ARS | `/a-ars/` | `app/a-ars/page.tsx` |
-| Produtos | `/produtos/` | `app/produtos/page.tsx` |
-| Categorias | `/categorias-de-luminarias/` | `app/categorias-de-luminarias/page.tsx` |
-| Contato e orçamento | `/contato-e-orcamento/` | `app/contato-e-orcamento/page.tsx` |
+| Início | `/` | `public_html/index.php` |
+| A ARS | `/a-ars/` | `public_html/a-ars/index.php` |
+| Produtos | `/produtos/` | `public_html/produtos/index.php` |
+| Categorias | `/categorias-de-luminarias/` | `public_html/categorias-de-luminarias/index.php` |
+| Contato e orçamento | `/contato-e-orcamento/` | `public_html/contato-e-orcamento/index.php` |
 
-As URLs (com barra final) são as mesmas do WordPress, então links já divulgados continuam funcionando.
-
-## Rodar localmente
-
-Requer Node.js 20 ou superior.
-
-```bash
-npm install
-cp .env.example .env.local   # ajuste os valores
-npm run dev                  # http://localhost:3000
-```
-
-Para produção:
-
-```bash
-npm run build
-npm start
-```
-
-## Onde editar
-
-- **Contatos, endereço, WhatsApp, Instagram e menu:** `config/site.ts`. Esse arquivo alimenta cabeçalho, rodapé, botão do WhatsApp e página de contato.
-- **Publicações do Instagram sem token:** `config/instagram-fallback.ts`.
-- **Visual:** `app/globals.css`. As cores ficam no topo, como variáveis, com os valores do site publicado.
-- **Imagens:** `public/images/`.
-- **Catálogo PDF:** `private/catalogo-ars-iluminacao.pdf`. Para trocar o catálogo, substitua o arquivo mantendo o nome ou ajuste `catalog.fileName` em `config/site.ts`.
-- **Conteúdo pendente:** os campos entre colchetes usam os componentes `PendingText` e `PendingMedia`. Ao receber o material aprovado, substitua o componente pelo texto ou imagem final. A lista completa está em `docs/PENDENCIAS.md`.
-
-## Formulário do catálogo (Home)
-
-1. O visitante informa nome, WhatsApp e e-mail e marca o consentimento (LGPD).
-2. O navegador valida os campos e o servidor (`/api/catalogo/`) valida de novo.
-3. O lead é gravado (veja "Armazenamento") com data e texto do consentimento.
-4. O servidor devolve um link assinado (HMAC), válido por 30 minutos, e o download começa.
-5. O PDF fica fora da pasta pública. Sem um link válido não há download, e um link expirado volta ao formulário.
-
-Proteções: honeypot contra robôs, limite de envios por IP, verificação de origem e validação dupla.
-
-## Formulário de contato
-
-Disponível em `/contato-e-orcamento/`. Os campos são nome, empresa, WhatsApp, e-mail, mensagem e consentimento. Usa o mesmo armazenamento, com `origem: "contato"`.
-
-## Armazenamento dos leads
-
-O destino é escolhido pela variável `LEADS_STORAGE`:
-
-- **`file`:** grava em `LEADS_DIR/leads.jsonl` (padrão `./data`), com permissão 600. Use em servidor Node ou VPS com disco persistente.
-- **`webhook`:** envia cada lead em JSON para `LEADS_WEBHOOK_URL` (Make, Zapier, n8n, Google Apps Script para Planilhas...). Opcionalmente envia `X-Webhook-Secret`. Obrigatório em hospedagem sem disco persistente, como a Vercel.
-- **`both`:** usa os dois destinos.
-
-Para exportar em CSV, acesse `/api/admin/leads/` com o usuário e a senha de `ADMIN_USER` e `ADMIN_PASSWORD`. Sem essas variáveis, a rota fica desativada.
-
-> A pasta `data/` está no `.gitignore`. **Nunca** versione dados de contato.
-
-## Instagram (3 publicações mais recentes)
-
-- **Com `INSTAGRAM_ACCESS_TOKEN`:** busca as 3 últimas publicações pela Instagram API (Instagram Login), com cache de `INSTAGRAM_REVALIDATE_SECONDS` (padrão: 1 h).
-- **Sem token, ou se a API falhar:** mostra os embeds oficiais das publicações listadas em `config/instagram-fallback.ts`.
-
-O token de longa duração expira em 60 dias e precisa ser renovado. Veja `docs/PENDENCIAS.md`.
-
-## Hospedagem
-
-O site precisa de um servidor Node.js, por causa das rotas de formulário e de download. Opções:
-
-- **Vercel:** importe o repositório e configure as variáveis. Use `LEADS_STORAGE=webhook`.
-- **VPS ou hospedagem Node (por exemplo, Hostinger com Node.js):** `npm ci && npm run build && npm start`, atrás de um proxy HTTPS. Pode usar `LEADS_STORAGE=file` com `LEADS_DIR` apontando para uma pasta persistente fora do diretório publicado.
-
-### Host4 (cPanel com "Setup Node.js App")
-
-1. **Setup Node.js App → Create Application:** Node 20 ou 22, modo *Production*, raiz da aplicação `ars_app` (fora da pasta pública), URL do domínio desejado e arquivo de inicialização `server.js`.
-2. **Terminal do cPanel:** clone a branch dentro de `~/ars_app`, ative o ambiente Node com o comando mostrado no topo da tela do app e rode:
-
-   ```bash
-   npm install
-   ```
-
-   ```bash
-   SITE_URL=https://dev.arsiluminacao.com.br SITE_NOINDEX=true npm run build
-   ```
-
-   `SITE_URL` e `SITE_NOINDEX` entram no build, então precisam estar no comando. Em produção, use o domínio final e `SITE_NOINDEX=false`.
-3. **Variáveis de ambiente** na tela do app: `NODE_ENV=production`, `SITE_URL`, `SITE_NOINDEX`, `CATALOG_TOKEN_SECRET`, `LEADS_STORAGE=file` e `LEADS_DIR=/home/USUARIO/ars_leads`.
-4. Clique em **Restart**. Para atualizar depois: `git pull`, `npm install`, o mesmo build e Restart.
-
-Variáveis obrigatórias em produção: `SITE_URL` e `CATALOG_TOKEN_SECRET`. A lista completa está em `.env.example`.
+As URLs são as mesmas do WordPress atual.
 
 ## Estrutura
 
 ```
-app/            páginas, layout, estilos e rotas de API
-components/     cabeçalho, rodapé, formulários, Instagram, marcadores de pendência
-config/         dados institucionais e fallback do Instagram
-lib/            validação, leads, token do catálogo, Instagram, limite de envios
-private/        catálogo PDF (servido apenas com link assinado)
-public/images/  logos, fotos da fábrica, mascote, marcas do grupo
-docs/           pendências e material de referência do handoff
+public_html/
+  index.php, a-ars/, produtos/ ...   páginas (PHP só para incluir cabeçalho e rodapé)
+  assets/css/style.css               visual completo (cores da marca no topo)
+  assets/js/main.js                  máscara do WhatsApp, validação e envio dos formulários
+  assets/img/, assets/fonts/         imagens otimizadas (WebP) e fonte Manrope local
+  includes/site.php                  contatos, endereço, WhatsApp, menu — edite aqui
+  includes/                          cabeçalho, rodapé, formulários, Instagram (bloqueada ao público)
+  api/catalogo.php                   formulário do catálogo → grava contato e libera o PDF
+  api/catalogo-download.php          entrega o PDF só com link assinado (30 min)
+  api/contato.php                    formulário de contato
+  admin/leads.php                    exportação dos contatos em CSV (usuário e senha)
+  private/                           catálogo PDF, configuração e contatos (bloqueada ao público)
+  .htaccess, robots.php, sitemap.php, 404.php
 ```
+
+## Configuração no servidor (uma vez)
+
+1. Copie `public_html/includes/config.example.php` para **`/home/USUARIO/ars_private/config.php`**, fora do public_html (recomendado), ou para `public_html/private/config.php`.
+2. Preencha:
+   - `catalog_secret`: gere no Terminal do cPanel com `openssl rand -hex 32`;
+   - `notify_email`: quem recebe o aviso de cada contato;
+   - `mail_from`: um e-mail do domínio;
+   - `admin_user` e `admin_pass_hash`: usuário e senha da exportação de contatos;
+   - `instagram_token`: opcional.
+3. Se usar `ars_private/` fora do public_html, mova também o `catalogo-ars-iluminacao.pdf` para lá.
+4. No cPanel, em Domínios, ative **"Forçar redirecionamento HTTPS"**.
+
+O `config.php` real e os contatos recebidos **nunca** vão para o Git (ver `.gitignore`).
+
+## Publicação automática (GitHub → Host4)
+
+O arquivo `.github/workflows/deploy.yml` envia `public_html/` por FTP seguro a cada atualização da branch de desenvolvimento. Configure uma vez, no GitHub:
+- **Settings → Secrets and variables → Actions → Secrets:** `FTP_SERVER`, `FTP_USERNAME` e `FTP_PASSWORD`.
+- **Variáveis (opcional):** `FTP_SERVER_DIR`, a pasta de destino, caso a conta FTP não abra direto na raiz do site.
+
+A publicação nunca apaga `config.php`, os contatos nem o cache. Também dá para publicar à mão, enviando a pasta `public_html/` pelo Gerenciador de Arquivos.
+
+## Formulários e contatos
+
+- **Validação:** feita no navegador e repetida no servidor, com consentimento LGPD, campo-armadilha contra robôs, limite de envios por IP e verificação de origem.
+- **Sem JavaScript:** os formulários funcionam também com o JavaScript desligado.
+- **Gravação e aviso:** cada contato é gravado em `private/leads/leads.jsonl` e avisado por e-mail para `notify_email`.
+- **Exportação:** acesse `/admin/leads.php` com o usuário e a senha da configuração; abre direto no Excel.
+
+## Instagram
+
+Com `instagram_token`, as 3 últimas publicações são buscadas no servidor e guardadas em cache, então o token não aparece no navegador. Sem token, aparecem os embeds definidos em `ARS_INSTAGRAM_FALLBACK` (`includes/site.php`). O token de longa duração vence em 60 dias; veja `docs/PENDENCIAS.md`.
+
+## SEO
+
+O site já tem:
+- título, descrição e canonical por página;
+- Open Graph;
+- dados estruturados da empresa;
+- `sitemap.xml` e `robots.txt` gerados conforme o domínio.
+
+Endereços que começam com `dev.` recebem automaticamente `noindex` e `robots.txt` bloqueado, para o site de teste não concorrer com o oficial.
+
+## Testar localmente
+
+```bash
+php -S 127.0.0.1:8080 -t public_html
+```
+
+O servidor embutido do PHP não lê o `.htaccess`, então use as URLs com barra final (`/a-ars/`).

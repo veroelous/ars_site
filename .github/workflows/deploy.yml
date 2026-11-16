@@ -1,0 +1,40 @@
+# Publica a pasta public_html na Host4 por FTP seguro a cada envio para a branch de desenvolvimento.
+# Segredos (Settings → Secrets and variables → Actions): FTP_SERVER, FTP_USERNAME, FTP_PASSWORD.
+# Variável opcional: FTP_SERVER_DIR (pasta de destino no FTP, padrão "./").
+name: Publicar na Host4
+
+on:
+  push:
+    branches: [claude/wonderful-planck-dkgcrz]
+    paths: [public_html/**, .github/workflows/deploy.yml]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-host4
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir sintaxe do PHP
+        run: find public_html -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Enviar por FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./public_html/
+          server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            private/config.php
+            private/leads/**
+            private/cache/**
+            private/ratelimit/**

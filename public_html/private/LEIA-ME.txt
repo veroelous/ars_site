@@ -1,0 +1,5 @@
+Pasta privada (bloqueada pelo .htaccess). Se existir ~/ars_private fora do public_html, o site usa aquela.
+- catalogo-ars-iluminacao.pdf  catálogo entregue só com link assinado
+- config.php                   segredos (copiar de includes/config.example.php) — não versionar
+- leads/                       contatos recebidos — não versionar
+- cache/, ratelimit/           arquivos temporários
