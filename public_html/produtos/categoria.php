@@ -13,7 +13,12 @@ if (!$cat || empty($cat['online'])) {
 }
 
 $grupos = ars_produtos_por_tipo($slugCat);
+$tipos = ARS_TIPOS[$slugCat] ?? [];
 $total = array_sum(array_map('count', $grupos));
+$isSpots = $slugCat === 'spots';
+$versoes = $isSpots ? array_sum(array_map(static fn($g) => array_sum(array_map(static fn($p) => count($p['versoes']), $g)), $grupos)) : 0;
+$contagem = $isSpots ? $total . ' famílias · ' . $versoes . ' versões' : $total . ' modelos';
+$ctaImg = $isSpots ? '/assets/img/produtos/spots/tela-4.webp' : '/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp';
 
 $page = [
     'title'       => $cat['nome'],
@@ -43,27 +48,27 @@ breadcrumbs($page['breadcrumbs']);
 ?>
 <main id="conteudo" class="inner-page">
   <?php page_hero(
-      'Linha ARS · ' . $total . ' modelos',
+      'Linha ARS · ' . $contagem,
       e($cat['nome']) . ' <span>para cada projeto.</span>',
       $cat['descricao'],
       ['image' => '/assets/img/produtos/categorias/' . $cat['imagem'], 'alt' => $cat['nome'] . ' ARS Iluminação', 'width' => 900, 'height' => 602],
       ['href' => '#modelos', 'label' => 'Ver modelos']
   ); ?>
 
-  <nav class="type-tabs" aria-label="Tipos de perfil">
+  <nav class="type-tabs" aria-label="Grupos de produtos">
     <div class="wrap">
       <?php foreach ($grupos as $tipo => $itens): ?>
-        <a href="#<?= e($tipo) ?>"><?= e(ARS_TIPOS_PERFIL[$tipo]['nome']) ?> <small><?= count($itens) ?></small></a>
+        <a href="#<?= e($tipo) ?>"><?= e($tipos[$tipo]['nome']) ?> <small><?= count($itens) ?></small></a>
       <?php endforeach; ?>
     </div>
   </nav>
 
   <div id="modelos">
     <?php foreach ($grupos as $tipo => $itens): ?>
-      <section class="section product-group<?= $tipo === 'embutir' || $tipo === 'piso' ? '' : ' section--white' ?>" id="<?= e($tipo) ?>">
+      <section class="section product-group<?= array_search($tipo, array_keys($tipos), true) % 2 ? '' : ' section--white' ?>" id="<?= e($tipo) ?>">
         <div class="wrap">
-          <h2><?= e(ARS_TIPOS_PERFIL[$tipo]['nome']) ?></h2>
-          <p><?= e(ARS_TIPOS_PERFIL[$tipo]['uso']) ?></p>
+          <h2><?= e($tipos[$tipo]['nome']) ?></h2>
+          <p><?= e($tipos[$tipo]['uso']) ?></p>
           <div class="product-grid">
             <?php foreach ($itens as $slug => $p): ?>
               <a class="product-card" href="<?= e(produto_url($slug, $p)) ?>">
@@ -71,11 +76,11 @@ breadcrumbs($page['breadcrumbs']);
                   <img src="<?= e(produto_imagem($slug, $p)) ?>" alt="<?= e($p['nome']) ?> ARS" loading="lazy" decoding="async">
                 </div>
                 <h3><?= e($p['nome']) ?></h3>
-                <p class="product-card__spec"><?= e($p['largura']) ?> × <?= e($p['altura']) ?> · 1, 2 e 3 m</p>
+                <p class="product-card__spec"><?= e(produto_resumo($p)) ?></p>
                 <?php if (!empty($p['destaques'])): ?>
                   <p class="product-card__tag"><?= e($p['destaques'][0]) ?></p>
                 <?php endif; ?>
-                <span class="product-card__more">Ver ficha técnica <?= icon('arrow-up-right', 14) ?></span>
+                <span class="product-card__more"><?= $isSpots ? 'Ver versões' : 'Ver ficha técnica' ?> <?= icon('arrow-up-right', 14) ?></span>
               </a>
             <?php endforeach; ?>
           </div>
@@ -94,7 +99,7 @@ breadcrumbs($page['breadcrumbs']);
           <a class="btn btn--orange" href="<?= e(produto_whatsapp('portfólio de ' . mb_strtolower($cat['nome']))) ?>" target="_blank" rel="noreferrer" data-track="whatsapp">Pedir orçamento</a>
           <a class="btn btn--ghost" href="/seja-revendedor/">Seja revendedor</a>
         </div>
-        <img class="cta-panel__img" src="/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp" alt="" loading="lazy" width="900" height="565">
+        <img class="cta-panel__img" src="<?= e($ctaImg) ?>" alt="" loading="lazy">
       </div>
     </div>
   </section>

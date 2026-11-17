@@ -56,6 +56,7 @@ const ARS_PAGES = [
     ['href' => '/a-ars/', 'label' => 'A ARS', 'priority' => '0.7'],
     ['href' => '/produtos/', 'label' => 'Produtos', 'priority' => '0.9'],
     ['href' => '/produtos/perfis-de-led/', 'label' => 'Perfis de LED', 'priority' => '0.9'],
+    ['href' => '/produtos/spots/', 'label' => 'Spots', 'priority' => '0.9'],
     ['href' => '/seja-revendedor/', 'label' => 'Seja revendedor', 'priority' => '0.9'],
     ['href' => '/onde-comprar/', 'label' => 'Onde comprar', 'priority' => '0.8'],
     ['href' => '/contato-e-orcamento/', 'label' => 'Contato e orçamento', 'priority' => '0.8'],

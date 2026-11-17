@@ -68,7 +68,8 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 
 - **Perfis de LED no ar:** a linha tem 20 produtos com página própria (`/produtos/perfis-de-led/…`). Medidas, códigos e acessórios foram transcritos do catálogo PDF. Falta a ARS conferir, usando **`docs/REVISAO-PERFIS-DE-LED.md`**. Os dados ficam em `public_html/includes/produtos.php`.
 - **Categorias corrigidas:** passaram a seguir o sumário do catálogo (Perfis de LED, Coleção Bonalux, Arandelas, Pendentes, Embutidos, Módulos de sobrepor, Spots, Jardim, Vidros). `/categorias-de-luminarias/` redireciona para `/produtos/`.
-- **Próximas linhas:** as outras 8 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
+- **Spots no ar:** a linha tem 14 famílias e 47 versões (`/produtos/spots/…`). Falta a ARS conferir, usando **`docs/REVISAO-SPOTS.md`**.
+- **Próximas linhas:** as outras 7 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
 - **Dados da contracapa do catálogo:**
   - O endereço (Estrada Joaquim de Souza Siqueira, 2099, Bairro Oratório, Socorro/SP) confirma o que o site usa.
   - Aparece um segundo telefone, (19) 99935-9225; falta definir se entra no site.
