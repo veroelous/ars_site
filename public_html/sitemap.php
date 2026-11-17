@@ -16,4 +16,12 @@ foreach (ARS_PAGES as $item) {
         $item['priority']
     );
 }
+require_once __DIR__ . '/includes/produtos.php';
+foreach (ars_produtos() as $slug => $p) {
+    printf(
+        "  <url><loc>%s</loc><lastmod>%s</lastmod><priority>0.8</priority></url>\n",
+        htmlspecialchars($base . produto_url($slug, $p), ENT_XML1),
+        date('Y-m-d', filemtime(__DIR__ . '/includes/produtos.php'))
+    );
+}
 echo "</urlset>\n";

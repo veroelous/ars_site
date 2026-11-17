@@ -1,82 +1,71 @@
 <?php
 declare(strict_types=1);
 
+require_once dirname(__DIR__) . '/includes/bootstrap.php';
+require_once dirname(__DIR__) . '/includes/produtos.php';
+
 $page = [
     'title'       => 'Produtos',
-    'description' => 'Explore o portfólio da ARS Iluminação por categoria e encontre soluções de iluminação para diferentes ambientes e aplicações.',
+    'description' => 'Portfólio da ARS Iluminação: perfis de LED, coleção Bonalux, arandelas, pendentes, embutidos, módulos de sobrepor, spots, jardim e vidros. Fabricante em Socorro/SP.',
     'path'        => '/produtos/',
+    'image'       => '/assets/img/produtos/categorias/perfis-de-led.webp',
 ];
 require dirname(__DIR__) . '/includes/head.php';
 require dirname(__DIR__) . '/includes/header.php';
 
-// No WordPress, "Ver categoria" apontava para páginas que ainda não existem (/pendentes/ etc.).
-// Até elas serem aprovadas, o botão leva à seção da página Categorias.
-$categories = [
-    ['Pendentes', '[IMAGEM — PENDENTES]', '[Descrição comercial aprovada]', 'pendentes'],
-    ['Perfis de LED', '[IMAGEM — PERFIS DE LED]', '[Descrição técnica e aplicações aprovadas]', 'perfis-de-led'],
-    ['Spots', '[IMAGEM — SPOTS]', '[Descrição comercial aprovada]', 'spots'],
-    ['Spots para trilho', '[IMAGEM — SPOTS PARA TRILHO]', '[Descrição técnica e aplicações aprovadas]', 'spots'],
-    ['Arandelas', '[IMAGEM — ARANDELAS]', '[Descrição comercial aprovada]', 'arandelas'],
-    ['Plafons e plafoniers', '[IMAGEM — PLAFONS]', '[Descrição comercial aprovada]', 'plafons'],
-];
+$totais = [];
+foreach (ars_produtos() as $prod) {
+    $totais[$prod['categoria']] = ($totais[$prod['categoria']] ?? 0) + 1;
+}
 
 site_header('solid', '/produtos/');
 ?>
 <main id="conteudo" class="inner-page">
   <?php page_hero(
-      'ARS Iluminação',
+      'Portfólio ARS',
       'Luminárias para <span>projetos que pedem mais.</span>',
-      'Explore o portfólio da ARS por categoria e encontre soluções de iluminação para diferentes ambientes e aplicações.',
-      ['title' => '[IMAGEM OU VÍDEO DE ABERTURA]', 'hint' => 'Inserir mídia oficial do portfólio']
+      'Nove linhas de produtos para lojas, especificadores e instaladores: de perfis de LED a pendentes, spots e iluminação de jardim.',
+      ['image' => '/assets/img/produtos/categorias/pendentes.webp', 'alt' => 'Pendente ARS Iluminação', 'width' => 700, 'height' => 987],
+      ['href' => '/produtos/perfis-de-led/', 'label' => 'Ver perfis de LED']
   ); ?>
 
   <section class="section section--white">
     <div class="wrap reveal">
-      <div class="kicker">Portfólio</div>
+      <div class="kicker">Linhas de produto</div>
       <h2>Encontre sua solução.</h2>
-      <p>Escolha uma categoria para apresentar produtos, aplicações e fichas técnicas.</p>
-      <div class="cards cards--3">
-        <?php foreach ($categories as [$name, $image, $text, $anchor]): ?>
-          <article class="card card--product">
-            <?= pending_media($image, '', 'light', 'card__pic') ?>
-            <h3><?= e($name) ?></h3>
-            <p><?= pending($text) ?></p>
-            <a class="btn btn--orange btn--sm" href="/categorias-de-luminarias/#<?= e($anchor) ?>">Ver categoria</a>
-          </article>
+      <div class="category-grid">
+        <?php foreach (ARS_CATEGORIAS as $slug => $cat): ?>
+          <?php $online = !empty($cat['online']); ?>
+          <a class="category-card<?= $online ? '' : ' category-card--catalog' ?>" href="<?= $online ? '/produtos/' . e($slug) . '/' : '/#catalogo' ?>">
+            <div class="category-card__img">
+              <img src="/assets/img/produtos/categorias/<?= e($cat['imagem']) ?>" alt="<?= e($cat['nome']) ?> ARS Iluminação" loading="lazy" decoding="async">
+            </div>
+            <div class="category-card__body">
+              <h3><?= e($cat['nome']) ?></h3>
+              <p><?= e($cat['resumo']) ?></p>
+              <span class="category-card__more">
+                <?= $online ? 'Ver ' . (int) ($totais[$slug] ?? 0) . ' modelos' : 'Ver no catálogo em PDF' ?>
+                <?= icon($online ? 'arrow-up-right' : 'arrow-down', 14) ?>
+              </span>
+            </div>
+          </a>
         <?php endforeach; ?>
       </div>
+      <p class="note">As demais linhas ganham páginas próprias em breve. Enquanto isso, todos os modelos estão no catálogo completo.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap reveal">
-      <div class="kicker">Informação para especificar</div>
-      <h2>Produto apresentado com clareza.</h2>
-      <div class="two-col two-col--panels">
-        <div class="panel">
-          <h3>Ficha técnica</h3>
-          <p><?= pending('[Medidas, potência, temperatura de cor, fluxo luminoso, acabamento, instalação e garantia — preencher com material oficial]') ?></p>
-          <?= pending_media('[PDF / CATÁLOGO / FICHA TÉCNICA]', '', 'light', 'pending-media--doc') ?>
-        </div>
-        <div class="panel">
-          <h3>Aplicações e compra</h3>
-          <p><?= pending('[Ambientes indicados, disponibilidade, prazo e orientação comercial — validar]') ?></p>
-          <a class="btn btn--orange" href="/contato-e-orcamento/">Solicitar orçamento</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--white">
-    <div class="wrap reveal">
       <div class="cta-panel">
         <div>
           <div class="eyebrow eyebrow--light">Atendimento comercial</div>
           <h2>Precisa de orientação para o seu projeto?</h2>
-          <p><?= pending('[Texto comercial aprovado para lojistas, especificadores, arquitetos e distribuidores]') ?></p>
+          <p>A equipe da ARS ajuda a escolher modelos, acabamentos e quantidades para lojas, obras e projetos de iluminação.</p>
           <a class="btn btn--orange" href="/contato-e-orcamento/">Falar com a ARS</a>
+          <a class="btn btn--ghost" href="/seja-revendedor/">Seja revendedor</a>
         </div>
-        <?= pending_media('[IMAGEM OU VÍDEO DE APLICAÇÃO]', '', 'dark') ?>
+        <img class="cta-panel__img" src="/assets/img/produtos/categorias/spots.webp" alt="" loading="lazy" width="423" height="170">
       </div>
     </div>
   </section>

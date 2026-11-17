@@ -15,7 +15,7 @@ $pageTitle = isset($page['title']) && $page['title'] !== ''
 $pageDescription = $page['description'] ?? ARS_SITE['description'];
 $base = ars_site_url();
 $canonical = $base . ($page['path'] ?? '/');
-$ogImage = $base . '/assets/img/hero-ars-fachada-frontal.jpg';
+$ogImage = $base . ($page['image'] ?? '/assets/img/hero-ars-fachada-frontal.jpg');
 
 $orgJsonLd = [
     '@context' => 'https://schema.org',
@@ -45,14 +45,16 @@ if ($path === '/') {
         'inLanguage' => 'pt-BR',
     ];
 } elseif (!empty($page['title'])) {
-    $jsonLd[] = [
-        '@context'        => 'https://schema.org',
-        '@type'           => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Início', 'item' => $base . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => $page['title'], 'item' => $canonical],
-        ],
-    ];
+    // Trilha: $page['breadcrumbs'] = [['Nome', '/caminho/'], ...] (sem o Início). Padrão: só a página atual.
+    $trail = $page['breadcrumbs'] ?? [[$page['title'], $path]];
+    $items = [['@type' => 'ListItem', 'position' => 1, 'name' => 'Início', 'item' => $base . '/']];
+    foreach (array_values($trail) as $i => [$crumbName, $crumbPath]) {
+        $items[] = ['@type' => 'ListItem', 'position' => $i + 2, 'name' => $crumbName, 'item' => $base . $crumbPath];
+    }
+    $jsonLd[] = ['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => $items];
+}
+foreach ($page['jsonld'] ?? [] as $extraLd) {
+    $jsonLd[] = $extraLd;
 }
 $ga4 = preg_replace('/[^A-Z0-9\-]/', '', strtoupper((string) ars_config()['ga4_id']));
 ?><!doctype html>

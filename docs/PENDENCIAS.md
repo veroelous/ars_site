@@ -64,6 +64,16 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 - CNPJ do controlador. O cadastro público mostra 23.654.084/0001-82 com outro endereço; confirmar qual exibir.
 - Prazo máximo de guarda dos dados.
 
+## 3c. Catálogo online (17/11/2026)
+
+- **Perfis de LED no ar:** a linha tem 20 produtos com página própria (`/produtos/perfis-de-led/…`). Medidas, códigos e acessórios foram transcritos do catálogo PDF. Falta a ARS conferir, usando **`docs/REVISAO-PERFIS-DE-LED.md`**. Os dados ficam em `public_html/includes/produtos.php`.
+- **Categorias corrigidas:** passaram a seguir o sumário do catálogo (Perfis de LED, Coleção Bonalux, Arandelas, Pendentes, Embutidos, Módulos de sobrepor, Spots, Jardim, Vidros). `/categorias-de-luminarias/` redireciona para `/produtos/`.
+- **Próximas linhas:** as outras 8 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
+- **Dados da contracapa do catálogo:**
+  - O endereço (Estrada Joaquim de Souza Siqueira, 2099, Bairro Oratório, Socorro/SP) confirma o que o site usa.
+  - Aparece um segundo telefone, (19) 99935-9225; falta definir se entra no site.
+  - O e-mail impresso no catálogo é o `comercial@`, que foi descartado. Atualizar na próxima edição do PDF.
+
 ## 4. Credenciais e configuração de conta
 
 Tudo fica no `config.php` privado do servidor (modelo em `public_html/includes/config.example.php`), nunca no Git.

@@ -10,6 +10,20 @@ ErrorDocument 404 /404.php
   # Pastas internas nunca são servidas diretamente.
   RewriteRule ^(includes|private)(/|$) - [F,L]
 
+  # Catálogo: /produtos/<categoria>/ e /produtos/<categoria>/<produto>/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^produtos/([a-z0-9-]+)$ /produtos/$1/ [R=301,L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^produtos/([a-z0-9-]+)/([a-z0-9-]+)$ /produtos/$1/$2/ [R=301,L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^produtos/([a-z0-9-]+)/$ produtos/categoria.php?c=$1 [L,QSA]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^produtos/([a-z0-9-]+)/([a-z0-9-]+)/$ produtos/produto.php?c=$1&p=$2 [L,QSA]
+
   # robots.txt e sitemap.xml gerados conforme o domínio (dev.* não é indexado).
   RewriteRule ^robots\.txt$ robots.php [L]
   RewriteRule ^sitemap\.xml$ sitemap.php [L]

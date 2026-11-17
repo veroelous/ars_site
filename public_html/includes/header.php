@@ -39,8 +39,27 @@ function page_hero(string $eyebrow, string $titleHtml, string $lead, array $medi
         <a class="btn btn--orange" href="<?= e($cta['href']) ?>"><?= e($cta['label']) ?></a>
       <?php endif; ?>
     </div>
-    <?= pending_media($media['title'], $media['hint'] ?? '', 'dark') ?>
+    <?php if (!empty($media['image'])): ?>
+      <div class="page-hero__media"><img src="<?= e($media['image']) ?>" alt="<?= e($media['alt'] ?? '') ?>" width="<?= (int) ($media['width'] ?? 900) ?>" height="<?= (int) ($media['height'] ?? 600) ?>" fetchpriority="high"></div>
+    <?php else: ?>
+      <?= pending_media($media['title'], $media['hint'] ?? '', 'dark') ?>
+    <?php endif; ?>
   </div>
 </section>
+    <?php
+}
+
+/** Trilha de navegação visível (Início › … › página atual). */
+function breadcrumbs(array $trail): void
+{
+    ?>
+<nav class="breadcrumbs" aria-label="Você está em">
+  <ol class="wrap">
+    <li><a href="/">Início</a></li>
+    <?php foreach ($trail as $i => [$name, $href]): ?>
+      <li><?php if ($i < count($trail) - 1): ?><a href="<?= e($href) ?>"><?= e($name) ?></a><?php else: ?><span aria-current="page"><?= e($name) ?></span><?php endif; ?></li>
+    <?php endforeach; ?>
+  </ol>
+</nav>
     <?php
 }
