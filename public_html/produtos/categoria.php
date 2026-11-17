@@ -20,13 +20,14 @@ $temVersoes = $slugCat !== 'perfis-de-led';
 $versoes = $temVersoes ? array_sum(array_map(static fn($g) => array_sum(array_map(static fn($p) => count($p['versoes']), $g)), $grupos)) : 0;
 $contagem = match ($slugCat) {
     'spots'     => $total . ' famílias · ' . $versoes . ' versões',
-    'pendentes' => $versoes . ' modelos',
+    'pendentes', 'embutidos' => $versoes . ' modelos',
     default     => $total . ' modelos',
 };
 $ctaImg = match ($slugCat) {
     'spots'     => '/assets/img/produtos/spots/tela-4.webp',
     'pendentes' => '/assets/img/produtos/pendentes/copo-6.webp',
     'arandelas' => '/assets/img/produtos/arandelas/cora.webp',
+    'embutidos' => '/assets/img/produtos/embutidos/abs-duplo-ar70-par20.webp',
     default     => '/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp',
 };
 

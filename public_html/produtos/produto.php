@@ -44,7 +44,10 @@ if ($isFamilia) {
             count($acab) > 1 ? 'opções' : 'opção'
         ));
     }
-    $codigos = array_column($p['versoes'], 'codigo');
+    $codigos = [];
+    foreach ($p['versoes'] as $v) {
+        array_push($codigos, ...array_values((array) $v['codigo']));
+    }
     $props = [];
     foreach ($p['ficha'] as $k => $v) {
         $props[] = ['@type' => 'PropertyValue', 'name' => $k, 'value' => $v];
@@ -162,7 +165,9 @@ breadcrumbs($page['breadcrumbs']);
             <?php if (isset($v['tipo'])): ?><div class="variant-type"><?= e($v['tipo']) ?></div><?php endif; ?>
             <h3><?= e($v['nome']) ?></h3>
             <dl class="variant-specs">
-              <div><dt>Código</dt><dd><?= e($v['codigo']) ?></dd></div>
+              <?php foreach ((array) $v['codigo'] as $rotulo => $cod): ?>
+                <div><dt>Código<?= is_string($rotulo) ? ' ' . e($rotulo) : '' ?></dt><dd><?= e($cod) ?></dd></div>
+              <?php endforeach; ?>
               <?php foreach (array_diff_key($v['specs'], ['Tipo' => 1]) as $k => $val): ?>
                 <div><dt><?= e($k) ?></dt><dd><?= e($val) ?></dd></div>
               <?php endforeach; ?>

@@ -71,7 +71,8 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 - **Spots no ar:** a linha tem 14 famílias e 47 versões (`/produtos/spots/…`). Falta a ARS conferir, usando **`docs/REVISAO-SPOTS.md`**.
 - **Pendentes no ar:** a linha tem 67 modelos em 32 páginas, com 10 linhas e coleções e 22 modelos avulsos. Os textos de apresentação das linhas são os oficiais do catálogo. Falta a ARS conferir, usando **`docs/REVISAO-PENDENTES.md`**, que tem 8 pontos de atenção.
 - **Arandelas no ar:** a linha tem 14 modelos (`/produtos/arandelas/…`). Falta a ARS conferir, usando **`docs/REVISAO-ARANDELAS.md`** (7 pontos de atenção; a Iris está sem código no catálogo).
-- **Próximas linhas:** as outras 5 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
+- **Embutidos no ar:** a linha tem 13 modelos em 5 páginas (`/produtos/embutidos/…`): spots de embutir ABS (MR11, MR16, AR70/PAR20, simples e duplos) e alumínio Axis 16 e 20 (1 a 4 focos). Falta a ARS conferir, usando **`docs/REVISAO-EMBUTIDOS.md`** (7 pontos de atenção, entre eles códigos fora do padrão nos duplos ABS e o Axis com um só código para branco e preto).
+- **Próximas linhas:** as outras 4 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
 - **Dados da contracapa do catálogo:**
   - O endereço (Estrada Joaquim de Souza Siqueira, 2099, Bairro Oratório, Socorro/SP) confirma o que o site usa.
   - Aparece um segundo telefone, (19) 99935-9225; falta definir se entra no site.

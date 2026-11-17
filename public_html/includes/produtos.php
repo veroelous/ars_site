@@ -50,7 +50,14 @@ const ARS_CATEGORIAS = [
         'pagina'    => 27,
         'online'    => true,
     ],
-    'embutidos'       => ['nome' => 'Embutidos', 'resumo' => 'Luminárias de embutir simples e múltiplas.', 'imagem' => 'embutidos.webp', 'pagina' => 45, 'online' => false],
+    'embutidos' => [
+        'nome'      => 'Embutidos',
+        'resumo'    => 'Spots de embutir em ABS e alumínio, de 1 a 4 focos.',
+        'descricao' => 'Spots de embutir em ABS com tratamento UV e em alumínio (linha Axis), de 1 a 4 focos, para lâmpadas MR11, MR16, AR70 e PAR20, nos acabamentos preto e branco.',
+        'imagem'    => 'embutidos.webp',
+        'pagina'    => 45,
+        'online'    => true,
+    ],
     'modulos-de-sobrepor' => ['nome' => 'Módulos de sobrepor', 'resumo' => 'Módulos e cilindros de sobrepor.', 'imagem' => 'modulos-de-sobrepor.webp', 'pagina' => 47, 'online' => false],
     'spots' => [
         'nome'      => 'Spots',
@@ -81,6 +88,10 @@ const ARS_TIPOS = [
         'globo'    => ['nome' => 'Arandelas com globo', 'uso' => 'Globo difusor para luz suave no ambiente.'],
         'cupula'   => ['nome' => 'Arandelas com cúpula', 'uso' => 'Cúpula de alumínio ou tecido.'],
         'aparente' => ['nome' => 'Lâmpada aparente e foco', 'uso' => 'Modelos com a lâmpada à mostra ou com foco direcionado.'],
+    ],
+    'embutidos' => [
+        'abs'  => ['nome' => 'Spots de embutir ABS', 'uso' => 'Em ABS com tratamento UV, que não amarela. Acabamentos preto e branco.'],
+        'axis' => ['nome' => 'Spots de embutir em alumínio Axis', 'uso' => 'Em alumínio, de 1 a 4 focos, para GU10 / MR16 (Axis 16) ou E27 / PAR20 (Axis 20).'],
     ],
     'pendentes' => [
         'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
@@ -162,8 +173,10 @@ function spot(string $familia, string $grupo, int $pagina, string $soquete, arra
 }
 
 /**
- * Monta uma linha/modelo de pendentes. $base: soquete, material, tensao, uso, acabamentos, descricao, cabos, observacao.
+ * Monta uma linha/modelo de pendentes. $base: soquete, material, tensao, uso, acabamentos, descricao, cabos, observacao,
+ * categoria (padrão: pendentes) e destaques.
  * Cada item: [tipo, nome, código, specs (rótulo => valor), imagem, opcional: ['acabamentos' => [...], 'soquete' => '...']].
+ * O código pode ser uma lista (rótulo => código) quando muda com o acabamento ou a lâmpada.
  */
 function linha(string $nome, string $grupo, int $pagina, array $base, array $itens): array
 {
@@ -207,7 +220,7 @@ function linha(string $nome, string $grupo, int $pagina, array $base, array $ite
         'imagem'      => $versoes[0]['imagem'],
         'pagina'      => $pagina,
         'observacao'  => $base['observacao'] ?? null,
-    ];
+    ] + (isset($base['destaques']) ? ['destaques' => $base['destaques']] : []);
 }
 
 /** Produtos por slug (o slug é a URL: /produtos/<categoria>/<slug>/). */
@@ -504,6 +517,53 @@ function ars_produtos(): array
         'arandela-copo-u' => $ar('Arandela Copo U', 'aparente', 26, 'ARS-730', [], 'copo-u', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
         'arandela-vello' => $ar('Arandela Vello', 'aparente', 26, 'ARS-VL260', ['Dimensões' => '260 × 200 mm'], 'vello', ['soquete' => 'E27', 'acabamentos' => $P8, 'observacao' => $NAL]),
         'arandela-eclipse' => $ar('Arandela Eclipse', 'aparente', 26, 'ARS-933', [], 'eclipse', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+    ];
+
+    // Embutidos: catálogo p. 45 (ABS) e 46 (alumínio Axis). Uma página por lâmpada/linha, com as versões de 1 a 4 focos.
+    $abs = ['categoria' => 'embutidos', 'material' => 'ABS com tratamento UV', 'acabamentos' => ['PT', 'BR'], 'destaques' => ['Tratamento UV: não amarela']];
+    $axs = ['categoria' => 'embutidos', 'material' => 'Alumínio', 'acabamentos' => ['BR', 'PT']];
+    $F = static fn(string $dim, int $focos, array $extra = []): array => ['Dimensões' => $dim] + $extra + ['Focos' => (string) $focos];
+    $produtos += [
+        'spot-de-embutir-abs-mr11' => linha('Spot de embutir ABS MR11', 'abs', 45, $abs + [
+            'descricao' => 'Spot de embutir quadrado em ABS com tratamento UV, que não amarela, para lâmpada MR11 com soquete GU10.',
+            'soquete' => 'GU10',
+        ], [
+            ['Simples', 'ABS MR11', ['preto' => '71802', 'branco' => '71801'], $F('74 × 74 mm', 1, ['Lâmpada' => 'MR11']), 'abs-mr11'],
+        ]),
+        'spot-de-embutir-abs-mr16' => linha('Spot de embutir ABS MR16', 'abs', 45, $abs + [
+            'descricao' => 'Spot de embutir em ABS com tratamento UV, que não amarela, para lâmpada MR16 com soquete GU10. Versões simples e dupla.',
+            'soquete' => 'GU10',
+        ], [
+            ['Simples', 'ABS MR16', ['preto' => '71602', 'branco' => '71601'], $F('100 × 100 mm', 1, ['Lâmpada' => 'MR16']), 'abs-mr16'],
+            ['Duplo', 'ABS Duplo MR16', ['preto' => '31802-PT', 'branco' => '31802-BR'], $F('100 × 180 mm', 2, ['Lâmpada' => 'MR16']), 'abs-duplo-mr16'],
+        ]),
+        'spot-de-embutir-abs-ar70-par20' => linha('Spot de embutir ABS AR70 / PAR20', 'abs', 45, $abs + [
+            'descricao' => 'Spot de embutir em ABS com tratamento UV, que não amarela, para lâmpada AR70 (soquete GU10) ou PAR20 (soquete E27). Versões simples e dupla.',
+            'soquete' => 'GU10 ou E27',
+        ], [
+            ['Simples', 'ABS AR70 / PAR20', ['AR70 preto' => '71702', 'AR70 branco' => '71701', 'PAR20 preto' => '71902', 'PAR20 branco' => '71901'],
+                $F('130 × 130 mm', 1, ['Lâmpada' => 'AR70 (GU10) ou PAR20 (E27)']), 'abs-ar70-par20'],
+            ['Duplo', 'ABS Duplo AR70 / PAR20', ['AR70 preto' => '700211-PT', 'AR70 branco' => '700211-BR', 'PAR20 preto' => '71012-PT', 'PAR20 branco' => '71012-BR'],
+                $F('130 × 234 mm', 2, ['Lâmpada' => 'AR70 (GU10) ou PAR20 (E27)']), 'abs-duplo-ar70-par20'],
+        ]),
+        'spot-de-embutir-axis-16' => linha('Spot de embutir Axis 16', 'axis', 46, $axs + [
+            'descricao' => 'Spot de embutir em alumínio para lâmpada GU10 / MR16, em versões de 1 a 4 focos.',
+            'soquete' => 'GU10 / MR16',
+        ], [
+            ['Simples', 'Axis 16.1', 'AXS161', $F('90 × 90 mm', 1), 'axis-16-1'],
+            ['Duplo', 'Axis 16.2', 'AXS162', $F('160 × 90 mm', 2), 'axis-16-2'],
+            ['Triplo', 'Axis 16.3', 'AXS163', $F('230 × 90 mm', 3), 'axis-16-3'],
+            ['Quádruplo', 'Axis 16.4', 'AXS164', $F('160 × 160 mm', 4), 'axis-16-4'],
+        ]),
+        'spot-de-embutir-axis-20' => linha('Spot de embutir Axis 20', 'axis', 46, $axs + [
+            'descricao' => 'Spot de embutir em alumínio para lâmpada PAR20 com soquete E27, em versões de 1 a 4 focos.',
+            'soquete' => 'E27 / PAR20',
+        ], [
+            ['Simples', 'Axis 20.1', 'AXS201', $F('105 × 105 mm', 1), 'axis-20-1'],
+            ['Duplo', 'Axis 20.2', 'AXS202', $F('195 × 105 mm', 2), 'axis-20-2'],
+            ['Triplo', 'Axis 20.3', 'AXS203', $F('275 × 105 mm', 3), 'axis-20-3'],
+            ['Quádruplo', 'Axis 20.4', 'AXS204', $F('195 × 195 mm', 4), 'axis-20-4'],
+        ]),
     ];
     return $produtos;
 }
