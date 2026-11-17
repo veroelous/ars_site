@@ -35,11 +35,11 @@ if ($isFamilia) {
         );
     } else {
         $descricao = preg_replace('/\s+/', ' ', trim(sprintf(
-            '%s ARS%s. %s Soquete %s%s. Fabricante em Socorro/SP.',
+            '%s ARS%s. %s %s%s. Fabricante em Socorro/SP.',
             $p['nome'],
-            $n > 1 ? ' com ' . $n . ' modelos' : '',
+            $n > 1 ? ' com ' . produto_contagem($p) : '',
             $p['descricao'] ?? '',
-            $p['soquete'],
+            soquete_rotulo($p['soquete']),
             $acab ? ', ' . count($acab) . (count($acab) > 1 ? ' opções' : ' opção') . ' de acabamento' : ''
         )));
     }
@@ -118,7 +118,7 @@ breadcrumbs($page['breadcrumbs']);
         <img src="<?= e($img) ?>" alt="<?= e($p['nome']) ?> ARS Iluminação" fetchpriority="high">
       </div>
       <div class="product-hero__info">
-        <div class="kicker"><?= e($cat['nome']) ?> · <?= e($isFamilia ? 'Soquete ' . $p['soquete'] : ucfirst($p['tipo'])) ?></div>
+        <div class="kicker"><?= e($cat['nome']) ?> · <?= e($isFamilia ? soquete_rotulo($p['soquete']) : ucfirst($p['tipo'])) ?></div>
         <h1><?= e($p['nome']) ?></h1>
         <p class="product-hero__lead"><?= e($p['descricao'] ?? $tipoInfo['uso']) ?></p>
         <ul class="spec-chips">
@@ -127,9 +127,15 @@ breadcrumbs($page['breadcrumbs']);
             <li><strong><?= e($p['focos']) ?></strong> <?= $p['focos'] === '1' ? 'foco' : 'focos' ?></li>
             <li><strong><?= count($p['versoes']) ?></strong> versões</li>
           <?php elseif ($isFamilia): ?>
-            <li><strong><?= e($p['soquete']) ?></strong> soquete</li>
+            <?php if (str_starts_with($p['soquete'], 'LED')): ?>
+              <li><strong>LED</strong> integrado</li>
+            <?php else: ?>
+              <li><strong><?= e($p['soquete']) ?></strong> soquete</li>
+            <?php endif; ?>
             <?php if ($n > 1): ?>
-              <li><strong><?= $n ?></strong> modelos</li>
+              <?php $mod = produto_modelos($p); ?>
+              <?php if ($mod > 1): ?><li><strong><?= $mod ?></strong> modelos</li><?php endif; ?>
+              <?php if ($mod < $n): ?><li><strong><?= $n ?></strong> tamanhos</li><?php endif; ?>
             <?php else: foreach (array_slice(array_diff_key($p['versoes'][0]['specs'], ['Tipo' => 1, 'Acabamentos' => 1, 'Soquete' => 1]), 0, 2, true) as $k => $v): ?>
               <li><strong><?= e($v) ?></strong> <?= e(mb_strtolower($k)) ?></li>
             <?php endforeach; endif; ?>
@@ -253,7 +259,7 @@ breadcrumbs($page['breadcrumbs']);
   <?php if ($relacionados): ?>
   <section class="section">
     <div class="wrap">
-      <h2><?= $slugCat === 'jardim' ? 'Outros produtos de jardim' : 'Outros ' . e(mb_strtolower($isFamilia ? $cat['nome'] : $tipoInfo['nome'])) ?></h2>
+      <h2><?= match ($slugCat) { 'jardim' => 'Outros produtos de jardim', 'colecao-bonalux' => 'Outros produtos da Coleção Bonalux', default => 'Outros ' . e(mb_strtolower($isFamilia ? $cat['nome'] : $tipoInfo['nome'])) } ?></h2>
       <div class="product-grid">
         <?php foreach ($relacionados as $rs => $r): ?>
           <a class="product-card" href="<?= e(produto_url($rs, $r)) ?>">
@@ -264,7 +270,7 @@ breadcrumbs($page['breadcrumbs']);
           </a>
         <?php endforeach; ?>
       </div>
-      <p><a class="btn btn--orange" href="/produtos/<?= e($slugCat) ?>/"><?= $slugCat === 'jardim' ? 'Ver toda a linha Jardim' : 'Ver todos os ' . e(mb_strtolower($cat['nome'])) ?></a></p>
+      <p><a class="btn btn--orange" href="/produtos/<?= e($slugCat) ?>/"><?= match ($slugCat) { 'jardim' => 'Ver toda a linha Jardim', 'colecao-bonalux' => 'Ver toda a Coleção Bonalux', default => 'Ver todos os ' . e(mb_strtolower($cat['nome'])) } ?></a></p>
     </div>
   </section>
   <?php endif; ?>

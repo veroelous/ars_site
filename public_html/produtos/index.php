@@ -15,7 +15,7 @@ require dirname(__DIR__) . '/includes/header.php';
 
 $totais = [];
 foreach (ars_produtos() as $prod) {
-    $totais[$prod['categoria']] = ($totais[$prod['categoria']] ?? 0) + (isset($prod['versoes']) ? count($prod['versoes']) : 1);
+    $totais[$prod['categoria']] = ($totais[$prod['categoria']] ?? 0) + produto_modelos($prod);
 }
 
 site_header('solid', '/produtos/');

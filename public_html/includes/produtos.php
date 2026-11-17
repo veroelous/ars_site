@@ -35,7 +35,14 @@ const ARS_CATEGORIAS = [
         'pagina'    => 3,
         'online'    => true,
     ],
-    'colecao-bonalux' => ['nome' => 'Coleção Bonalux', 'resumo' => 'Linhas decorativas da coleção Bonalux, do Grupo ARS.', 'imagem' => 'colecao-bonalux.webp', 'pagina' => 13, 'online' => false],
+    'colecao-bonalux' => [
+        'nome'      => 'Coleção Bonalux',
+        'resumo'    => 'Linhas decorativas da coleção Bonalux, do Grupo ARS.',
+        'descricao' => 'Pendentes, plafons e arandelas com LED integrado da coleção Bonalux, do Grupo ARS, em alumínio e na paleta de 8 cores.',
+        'imagem'    => 'colecao-bonalux.webp',
+        'pagina'    => 13,
+        'online'    => true,
+    ],
     'arandelas' => [
         'nome'      => 'Arandelas',
         'resumo'    => 'Arandelas para parede em diversos modelos e acabamentos.',
@@ -128,6 +135,12 @@ const ARS_TIPOS = [
     'vidros' => [
         'arandelas' => ['nome' => 'Arandelas de vidro', 'uso' => 'Vidro curvo decorado sobre base de parede, 100 × 180 mm, soquete E27.'],
         'plafons'   => ['nome' => 'Plafons de vidro', 'uso' => 'Redondos ou quadrados, em dois tamanhos: 1 ou 2 lâmpadas E27.'],
+    ],
+    'colecao-bonalux' => [
+        'linhas'    => ['nome' => 'Linhas', 'uso' => 'Famílias com o mesmo desenho: pendente, plafon, spot e arandela.'],
+        'pendentes' => ['nome' => 'Pendentes', 'uso' => 'Pendentes lineares e geométricos com LED integrado.'],
+        'plafons'   => ['nome' => 'Plafons', 'uso' => 'Plafons de barras cruzadas com LED integrado.'],
+        'arandelas' => ['nome' => 'Arandelas', 'uso' => 'Arandelas lineares e de camarim com LED integrado.'],
     ],
     'pendentes' => [
         'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
@@ -232,7 +245,7 @@ function linha(string $nome, string $grupo, int $pagina, array $base, array $ite
         }
         $versoes[] = ['nome' => $vnome, 'codigo' => $codigo, 'imagem' => $imagem, 'specs' => $specs, 'tipo' => $tipo];
     }
-    $ficha = ['Soquete' => $base['soquete']];
+    $ficha = isset($base['led']) ? ['LED integrado' => $base['led']] : ['Soquete' => $base['soquete']];
     foreach (['material' => 'Material', 'tensao' => 'Tensão', 'uso' => 'Uso'] as $k => $rotulo) {
         if (!empty($base[$k])) {
             $ficha[$rotulo] = $base[$k];
@@ -718,6 +731,93 @@ function ars_produtos(): array
         'plafon-de-vidro-bamboo'           => $plv('Bamboo', 'quadrado', ['945P-BA-BR', '945-BA-BR'], 'plafon-bamboo'),
         'plafon-de-vidro-risk-quadrado'    => $plv('Risk Quadrado', 'quadrado', ['900P-QUAD-RIS', '900-QUAD-RIS'], 'plafon-risk-quadrado'),
     ];
+
+    // Coleção Bonalux: catálogo p. 13 a 21. LED integrado; tamanhos com o mesmo código viram versões (potência e medidas).
+    $bx = ['categoria' => 'colecao-bonalux', 'soquete' => 'LED integrado', 'led' => '3000 K / 4000 K', 'tensao' => '127 V ~ 220 V', 'acabamentos' => $P8];
+    $alu = ['material' => 'Alumínio'];
+    $int = ['uso' => 'Interno'];
+    // Uma versão por tamanho: [potência => medidas].
+    $tam = static function (string $tipo, string $nome, $codigo, array $tamanhos, string $img, array $extra = [], array $over = []): array {
+        $out = [];
+        foreach ($tamanhos as $w => $dim) {
+            $item = [$tipo, count($tamanhos) > 1 ? $nome . ' ' . $w . ' W' : $nome, $codigo, ['Potência' => $w . ' W', 'Dimensões' => $dim] + $extra, $img];
+            if ($over) {
+                $item[] = $over;
+            }
+            $out[] = $item;
+        }
+        return $out;
+    };
+    $produtos += [
+        'linha-dritto' => linha('Linha Dritto', 'linhas', 13, $alu + $bx + [
+            'descricao' => 'Versátil e contemporânea, combina iluminação linear com diferentes possibilidades de composição. Disponível nas versões com ou sem spots direcionáveis, conta também com o Spot Dritto avulso.',
+            'led' => '3000 K / 4000 K / 6500 K',
+        ], [
+            ['Pendente', 'Pendente Dritto', ['220 V' => 'BLX-513220', '127 V' => 'BLX-513127'], ['Potência' => '36 W', 'Comprimento' => '1200 mm', 'Perfil' => '35 × 35 mm', 'Altura máxima' => '2000 mm'], 'pendente-dritto'],
+            ['Pendente', 'Pendente Dritto Spotted', ['220 V' => 'BLX-533220', '127 V' => 'BLX-533127'], ['Potência' => '36 W', 'Comprimento' => '1200 mm', 'Altura máxima' => '2000 mm', 'Spots' => 'Direcionáveis'], 'pendente-dritto-spotted'],
+            ['Spot', 'Spot Dritto', 'BLX-DR96011', ['Base' => '60 mm', 'Lâmpada' => 'MR11 (não acompanha)'], 'spot-dritto', ['soquete' => 'MR11']],
+        ]),
+        'pendente-sottile' => linha('Pendente Sottile', 'pendentes', 14, $alu + $int + $bx + [
+            'descricao' => 'Com curva suave e design sofisticado, proporciona uma iluminação direta, uniforme e elegante.',
+        ], [['Pendente', 'Pendente Sottile', 'BLX-PST120', ['Comprimento' => '1200 mm'], 'pendente-sottile']]),
+        'pendente-raggio' => linha('Pendente Raggio', 'pendentes', 14, $alu + $int + $bx + [
+            'descricao' => 'Com traços marcantes e geometria angular, uma presença expressiva no ambiente.',
+        ], $tam('Pendente', 'Raggio', 'BLX-291', [24 => '800 mm', 34 => '1200 mm'], 'pendente-raggio', ['Altura máxima' => '2000 mm'])),
+        'pendente-ferrara' => linha('Pendente Ferrara', 'pendentes', 15, $alu + $int + $bx + [
+            'descricao' => 'Com linhas que se cruzam em uma composição leve e contemporânea, une geometria e iluminação, criando um visual marcante e sofisticado.',
+        ], $tam('Pendente', 'Pendente Ferrara', 'BLX-811', [27 => '450 mm'], 'pendente-ferrara', ['Altura máxima' => '2000 mm'])),
+        'pendente-siena' => linha('Pendente Siena', 'pendentes', 15, $alu + $int + $bx + [
+            'descricao' => 'Com linhas que se encontram em diferentes ângulos, cria uma composição dinâmica e sofisticada, em uma peça de forte presença visual.',
+        ], $tam('Pendente', 'Pendente Siena', 'BLX-815', [64 => '800 mm'], 'pendente-siena', ['Altura máxima' => '2000 mm'])),
+        'linha-piazza' => linha('Linha Piazza', 'linhas', 16, $bx + [
+            'descricao' => 'Com formas geométricas que se entrelaçam, traz personalidade e sofisticação ao ambiente.',
+        ], array_merge(
+            $tam('Pendente', 'Pendente Piazza', 'BLX-263', [32 => '200 × 200 mm', 48 => '300 × 300 mm', 64 => '400 × 400 mm'], 'pendente-piazza', ['Material' => 'Alumínio', 'Uso' => 'Interno']),
+            $tam('Plafon', 'Plafon Piazza', 'BLX-261', [32 => '200 × 200 mm', 48 => '300 × 300 mm', 64 => '400 × 400 mm'], 'plafon-piazza'),
+            $tam('Plafon', 'Plafon Piazza Soft', 'BLX-262', [32 => '200 × 200 mm', 48 => '300 × 300 mm', 64 => '400 × 400 mm'], 'plafon-piazza-soft', ['Iluminação' => 'Indireta'])
+        )),
+        'plafon-stellare' => linha('Plafon Stellare', 'plafons', 17, $bx, array_merge(
+            $tam('Plafon', 'Stellare 15', 'BLX-251', [15 => '350 × 350 mm'], 'stellare-15'),
+            $tam('Plafon', 'Stellare 22', 'BLX-251', [22 => '550 × 550 mm'], 'stellare-22')
+        )),
+        'plafon-stella' => linha('Plafon Stella', 'plafons', 17, $bx, array_merge(
+            $tam('Plafon', 'Stella 22', 'BLX-240', [22 => '400 × 400 mm'], 'stella-22'),
+            $tam('Plafon', 'Stella 45', 'BLX-240', [45 => '800 × 800 mm'], 'stella-45')
+        )),
+        'linha-tuono' => linha('Linha Tuono', 'linhas', 18, $bx + [
+            'descricao' => 'Com design contemporâneo e retroiluminado, cria um elegante efeito de luz no teto e parede, valorizando formas e volumes com suavidade.',
+        ], array_merge(
+            $tam('Plafon', 'Plafon Tuono', 'BLX-361', [48 => '300 × 300 mm', 64 => '400 × 400 mm', 80 => '500 × 500 mm'], 'plafon-tuono', ['Material' => 'Alumínio', 'Uso' => 'Interno']),
+            $tam('Spot', 'Tuono Spot', 'BLX-AR763', [16 => '400 × 75 mm', 24 => '600 × 75 mm'], 'tuono-spot'),
+            $tam('Arandela', 'Arandela Tuono', 'BLX-761', [16 => '400 × 75 mm', 24 => '600 × 75 mm', 32 => '800 × 75 mm', 40 => '1000 × 75 mm'], 'arandela-tuono'),
+            $tam('Arandela', 'Tuono Globe', 'BLX-762', [16 => '400 × 75 mm', 24 => '600 × 75 mm'], 'tuono-globe', ['Globo' => 'Soquete G9 (lâmpada não inclusa)'])
+        )),
+    ];
+    $arb = static fn(string $nome, int $pag, string $codigo, array $tamanhos, string $img, array $base = [], array $extra = [])
+        => linha($nome, 'arandelas', $pag, $base + $bx, $tam('Arandela', $nome, $codigo, $tamanhos, $img, $extra));
+    $led3 = ['led' => '3000 K / 4000 K / 6500 K'];
+    $ind = ['Iluminação' => 'Indireta'];
+    $cam = [9 => '400 × 45 mm', 12 => '550 × 45 mm', 15 => '800 × 45 mm'];
+    $produtos += [
+        'arandela-due-lucci'          => $arb('Arandela Due Lucci', 19, 'BLX-225', [12 => '400 × 55 mm', 16 => '550 × 55 mm', 24 => '800 × 55 mm'], 'due-lucci', $led3),
+        'arandela-due-lucci-ii'       => $arb('Arandela Due Lucci II', 19, 'BLX-226', [10 => '400 × 55 mm', 14 => '550 × 55 mm', 18 => '800 × 55 mm'], 'due-lucci-ii', $led3),
+        'arandela-doppio'             => $arb('Arandela Doppio', 19, 'BLX-285', [14 => '550 × 120 mm', 18 => '800 × 120 mm'], 'doppio', $led3),
+        'arandela-linea-due-11'       => $arb('Arandela Linea Due 11', 19, 'BLX-234', [11 => '400 × 75 mm'], 'linea-due-11'),
+        'arandela-linea-due-20'       => $arb('Arandela Linea Due 20', 19, 'BLX-224', [15 => '550 × 110 mm', 20 => '800 × 110 mm'], 'linea-due-20'),
+        'arandela-linea-central'      => $arb('Arandela Linea Central', 19, 'BLX-124', [9 => '400 × 55 mm', 12 => '550 × 55 mm', 16 => '850 × 55 mm'], 'linea-central'),
+        'camarim-eleganza'            => $arb('Camarim Eleganza', 20, 'BLX-115', $cam, 'camarim-eleganza', $alu),
+        'camarim-job'                 => $arb('Camarim Job', 20, 'BLX-135', $cam, 'camarim-job', $alu, ['Eixo' => 'Articulado']),
+        'arandela-linea-soft'         => $arb('Arandela Linea Soft', 20, 'BLX-113', [9 => '400 × 50 mm', 12 => '550 × 50 mm', 16 => '850 × 50 mm'], 'linea-soft', $int, $ind),
+        'arandela-linea-soft-central' => $arb('Arandela Linea Soft Central', 20, 'BLX-123', [9 => '400 × 50 mm', 12 => '550 × 50 mm', 16 => '850 × 50 mm'], 'linea-soft-central', $int, $ind),
+        'arandela-linea-slim'         => $arb('Arandela Linea Slim', 20, 'BLX-103', [24 => '1200 × 50 mm', 32 => '1600 × 50 mm', 40 => '2000 × 50 mm'], 'linea-slim', $int, $ind),
+        'arandelas-sottile' => linha('Arandelas Sottile', 'arandelas', 21, $alu + $bx + [
+            'descricao' => 'Com design slim e curva sofisticada, valoriza o ambiente com sua iluminação retroiluminada que projeta um facho elegante na parede.',
+            'acabamentos' => array_merge($P8, ['AZ', 'RS', 'AB']),
+        ], [
+            ['Arandela', 'Sottile 60', 'BLX-ST60', ['Potência' => '9 W', 'Altura' => '600 mm', 'Largura' => '35 mm'], 'sottile-60'],
+            ['Arandela', 'Sottile 100', 'BLX-ST100', ['Potência' => '15 W', 'Altura' => '1000 mm', 'Largura' => '35 mm'], 'sottile-100'],
+        ]),
+    ];
     return $produtos;
 }
 
@@ -751,6 +851,38 @@ function produto_imagem(string $slug, array $p): string
     return '/assets/img/produtos/' . $p['categoria'] . '/' . ($p['imagem'] ?? $slug) . '.webp';
 }
 
+/** "Soquete E27" ou, para LED integrado, só "LED integrado". */
+function soquete_rotulo(string $soquete): string
+{
+    return str_starts_with($soquete, 'LED') ? $soquete : 'Soquete ' . $soquete;
+}
+
+/**
+ * Modelos distintos de um produto com versões. Tamanhos do mesmo modelo (nome terminado em
+ * " 24 W", Coleção Bonalux) contam como um modelo só.
+ */
+function produto_modelos(array $p): int
+{
+    if (!isset($p['versoes'])) {
+        return 1;
+    }
+    return count(array_unique(array_map(static fn($v) => preg_replace('/ \d+ W$/', '', $v['nome']), $p['versoes'])));
+}
+
+/** "3 modelos", "2 tamanhos" ou "3 modelos em 9 tamanhos" (vazio quando há uma versão só). */
+function produto_contagem(array $p): string
+{
+    $v = count($p['versoes'] ?? []);
+    $m = produto_modelos($p);
+    if ($v <= 1) {
+        return '';
+    }
+    if ($m === $v) {
+        return $m . ' modelos';
+    }
+    return $m === 1 ? $v . ' tamanhos' : $m . ' modelos em ' . $v . ' tamanhos';
+}
+
 /** Linha curta com as principais especificações (cards e listas). */
 function produto_resumo(array $p): string
 {
@@ -758,14 +890,13 @@ function produto_resumo(array $p): string
         return 'Soquete ' . $p['soquete'] . ' · ' . $p['focos'] . ($p['focos'] === '1' ? ' foco' : ' focos');
     }
     if (isset($p['versoes'])) {
-        $n = count($p['versoes']);
-        if ($n > 1) {
-            return $n . ' modelos · ' . $p['soquete'];
+        if (count($p['versoes']) > 1) {
+            return produto_contagem($p) . ' · ' . $p['soquete'];
         }
         $s = $p['versoes'][0]['specs'];
         unset($s['Tipo'], $s['Acabamentos'], $s['Soquete']);
         $partes = array_slice(array_map(static fn($k, $v) => $k . ' ' . $v, array_keys($s), $s), 0, 2);
-        return implode(' · ', array_merge($partes, ['Soquete ' . $p['soquete']]));
+        return implode(' · ', array_merge($partes, [soquete_rotulo($p['soquete'])]));
     }
     return $p['largura'] . ' × ' . $p['altura'] . ' · 1, 2 e 3 m';
 }

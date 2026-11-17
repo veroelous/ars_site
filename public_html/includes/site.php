@@ -56,6 +56,7 @@ const ARS_PAGES = [
     ['href' => '/a-ars/', 'label' => 'A ARS', 'priority' => '0.7'],
     ['href' => '/produtos/', 'label' => 'Produtos', 'priority' => '0.9'],
     ['href' => '/produtos/perfis-de-led/', 'label' => 'Perfis de LED', 'priority' => '0.9'],
+    ['href' => '/produtos/colecao-bonalux/', 'label' => 'Coleção Bonalux', 'priority' => '0.9'],
     ['href' => '/produtos/spots/', 'label' => 'Spots', 'priority' => '0.9'],
     ['href' => '/produtos/arandelas/', 'label' => 'Arandelas', 'priority' => '0.9'],
     ['href' => '/produtos/pendentes/', 'label' => 'Pendentes', 'priority' => '0.9'],
