@@ -16,7 +16,7 @@ ErrorDocument 404 /404.php
 </IfModule>
 
 # Arquivos que não devem ser baixados.
-<FilesMatch "\.(jsonl|log|md|sh|ini|bak)$">
+<FilesMatch "\.(jsonl?|log|md|sh|ini|bak)$">
   Require all denied
 </FilesMatch>
 
