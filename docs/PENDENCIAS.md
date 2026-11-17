@@ -75,7 +75,7 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 - **Módulos de sobrepor no ar:** a linha tem 12 modelos em 6 páginas (`/produtos/modulos-de-sobrepor/…`): Kube 16, Tube 16, Tube 70, Tube 20 e alumínio Apex 16 e 70 (1 a 4 focos). Falta a ARS conferir, usando **`docs/REVISAO-MODULOS-DE-SOBREPOR.md`** (8 pontos de atenção). O acabamento **CF** não tem nome no catálogo e aparece como `[CF: NOME A CONFIRMAR]`.
 - **Jardim no ar:** a linha tem 17 modelos em 8 páginas (`/produtos/jardim/…`): Garden (espeto e embutido de solo), balizadores Oak, Alloy e Aris, Arandela G9, Tartaruga e Plafonier. Falta a ARS conferir, usando **`docs/REVISAO-JARDIM.md`** (10 pontos de atenção). Garden, Alloy e Aris aparecem com `[ACABAMENTOS A CONFIRMAR]`.
 - **Vidros no ar:** a linha tem 16 modelos em 11 páginas (`/produtos/vidros/…`): 6 arandelas e 5 plafons de vidro (cada plafon em 2 tamanhos). Falta a ARS conferir, usando **`docs/REVISAO-VIDROS.md`** (7 pontos de atenção).
-- **Próxima linha:** a Coleção Bonalux aparece com foto e link para o catálogo em PDF, até ganharem páginas próprias.
+- **Próxima linha:** a Coleção Bonalux aparece com foto e link para o catálogo em PDF, até ganhar páginas próprias.
 - **Dados da contracapa do catálogo:**
   - O endereço (Estrada Joaquim de Souza Siqueira, 2099, Bairro Oratório, Socorro/SP) confirma o que o site usa.
   - Aparece um segundo telefone, (19) 99935-9225; falta definir se entra no site.
