@@ -76,7 +76,14 @@ const ARS_CATEGORIAS = [
         'pagina'    => 49,
         'online'    => true,
     ],
-    'jardim'          => ['nome' => 'Jardim', 'resumo' => 'Espetos, balizadores e arandelas para áreas externas.', 'imagem' => 'jardim.webp', 'pagina' => 61, 'online' => false],
+    'jardim' => [
+        'nome'      => 'Jardim',
+        'resumo'    => 'Espetos, balizadores e arandelas para áreas externas.',
+        'descricao' => 'Espetos e embutidos de solo IP65 (Garden), balizadores em alumínio (Oak, Alloy e Aris), arandelas e plafonier para jardins, caminhos e áreas externas.',
+        'imagem'    => 'jardim.webp',
+        'pagina'    => 61,
+        'online'    => true,
+    ],
     'vidros'          => ['nome' => 'Vidros', 'resumo' => 'Peças com vidro decorado em diversos padrões.', 'imagem' => 'vidros.webp', 'pagina' => 66, 'online' => false],
 ];
 
@@ -105,6 +112,11 @@ const ARS_TIPOS = [
     'modulos-de-sobrepor' => [
         'focos-unicos' => ['nome' => 'Kube e Tube', 'uso' => 'Módulos de 1 foco: quadrado (Kube) ou cilíndricos (Tube).'],
         'apex'         => ['nome' => 'Módulos de sobrepor em alumínio Apex', 'uso' => 'Em alumínio, de 1 a 4 focos, para GU10 / MR16 (Apex 16) ou GU10 / AR70 (Apex 70).'],
+    ],
+    'jardim' => [
+        'garden'      => ['nome' => 'Espetos e embutidos de solo', 'uso' => 'Linha Garden: IP65, com anti-ofuscante, para lâmpadas MR11 e MR16.'],
+        'balizadores' => ['nome' => 'Balizadores', 'uso' => 'Peças em alumínio para jardins, caminhos e áreas externas.'],
+        'parede'      => ['nome' => 'Arandelas e plafonier', 'uso' => 'Peças de parede e de teto.'],
     ],
     'pendentes' => [
         'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
@@ -611,6 +623,60 @@ function ars_produtos(): array
             ['Triplo', 'Apex 70.3', 'APX703', ['Dimensões' => '310 × 110 × 80 mm', 'Focos' => '3'], 'apex-70-3'],
             ['Quádruplo', 'Apex 70.4', 'APX704', ['Dimensões' => '210 × 210 × 80 mm', 'Focos' => '4'], 'apex-70-4'],
         ]),
+    ];
+
+    // Jardim: catálogo p. 61 a 65 (a p. 65 tem cabeçalho "Coleção ARS", mas está na seção Jardim do sumário).
+    $jd = ['categoria' => 'jardim'];
+    $ext = $jd + ['material' => 'Alumínio', 'tensao' => '127 V ~ 220 V', 'uso' => 'Externo'];
+    $garden = $jd + ['soquete' => 'GU10', 'acabamentos' => [], 'destaques' => ['IP65', 'Anti-ofuscante']];
+    $aris = static fn(string $dim): array => ['Dimensões' => $dim, 'Difusor' => 'Acrílico ou vidro'];
+    $produtos += [
+        'garden-espeto' => linha('Garden Espeto', 'garden', 61, $garden + [
+            'descricao' => 'Espeto de jardim IP65 com anti-ofuscante, para lâmpada MR11 ou MR16 com soquete GU10.',
+        ], [
+            ['Espeto', 'Garden 11 Espeto', 'ARS-GES11', ['Altura' => '300 mm', 'Diâmetro' => '45 mm', 'Lâmpada' => 'MR11'], 'garden-11-espeto'],
+            ['Espeto', 'Garden 16 Espeto', 'ARS-GES16', ['Altura' => '300 mm', 'Diâmetro' => '60 mm', 'Lâmpada' => 'MR16'], 'garden-16-espeto'],
+        ]),
+        'garden-embutido' => linha('Garden Embutido', 'garden', 61, $garden + [
+            'descricao' => 'Embutido de solo IP65 com anti-ofuscante, para lâmpada MR11 ou MR16 com soquete GU10.',
+        ], [
+            ['Embutido de solo', 'Garden 11 Embutido', 'ARS-GEM11', ['Altura' => '100 mm', 'Diâmetro' => '55 mm', 'Lâmpada' => 'MR11'], 'garden-11-embutido'],
+            ['Embutido de solo', 'Garden 16 Embutido', 'ARS-GEM16', ['Altura' => '100 mm', 'Diâmetro' => '70 mm', 'Lâmpada' => 'MR16'], 'garden-16-embutido'],
+        ]),
+        'linha-oak' => linha('Linha Oak', 'balizadores', 62, $ext + [
+            'descricao' => 'Balizadores em alumínio com haste curva, para lâmpada MR16 com soquete GU10. A Oak Art tem foco articulado.',
+            'soquete' => 'GU10 / MR16', 'acabamentos' => ['BR', 'PT', 'CF', 'PD'],
+        ], [
+            ['Balizador', 'Oak Bell', 'OAK-BLL', ['Altura' => '900 mm (700 mm instalado)', 'Diâmetro' => '50 mm'], 'oak-bell'],
+            ['Balizador', 'Oak', 'OAK', ['Altura' => '900 mm (700 mm instalado)', 'Diâmetro' => '50 mm'], 'oak'],
+            ['Balizador', 'Oak Art', 'OAK-ART', ['Altura' => '900 mm (700 mm instalado)', 'Diâmetro' => '50 mm', 'Articulado' => 'Sim'], 'oak-art'],
+        ]),
+        'linha-jardim-alloy' => linha('Linha Jardim Alloy', 'balizadores', 63, $ext + [
+            'descricao' => 'Com design minimalista e estrutura vertical, utiliza luz rebatida para criar uma iluminação suave e confortável, ideal para valorizar jardins, caminhos e áreas externas.',
+            'soquete' => 'GU10 / MR16 / MR11', 'acabamentos' => [], 'observacao' => $NAL,
+        ], [
+            ['Balizador', 'Alloy.20', 'ARS-ALLOY20', ['Largura' => '90 mm', 'Altura' => '200 mm'], 'alloy-20'],
+            ['Balizador', 'Alloy.40', 'ARS-ALLOY40', ['Largura' => '90 mm', 'Altura' => '400 mm'], 'alloy-40'],
+        ]),
+        'linha-aris' => linha('Linha Aris', 'balizadores', 64, $ext + [
+            'descricao' => 'Arandela, balizadores e poste de seção quadrada em alumínio, com difusor em acrílico ou vidro.',
+            'soquete' => 'E27 (Aris 100: G13)', 'acabamentos' => [],
+        ], [
+            ['Arandela', 'Arandela Aris', ['acrílico' => 'ARA20', 'vidro' => 'ARV20'], $aris('90 × 90 × 200 mm'), 'arandela-aris', ['soquete' => 'E27']],
+            ['Balizador', 'Aris 30', ['acrílico' => 'BLA30', 'vidro' => 'BLV30'], $aris('90 × 90 × 300 mm'), 'aris-balizador', ['soquete' => 'E27']],
+            ['Balizador', 'Aris 50', ['acrílico' => 'BLA50', 'vidro' => 'BLV50'], $aris('90 × 90 × 500 mm'), 'aris-balizador', ['soquete' => 'E27']],
+            ['Balizador', 'Aris 70', ['acrílico' => 'BLA70', 'vidro' => 'BLV70'], $aris('90 × 90 × 700 mm'), 'aris-balizador', ['soquete' => 'E27']],
+            ['Poste', 'Aris 100', ['acrílico' => 'PSA100', 'vidro' => 'PSV100'], $aris('90 × 90 × 1000 mm'), 'aris-100', ['soquete' => 'G13']],
+        ]),
+        'arandela-g9' => linha('Arandela G9', 'parede', 65, $jd + [
+            'material' => 'ABS', 'uso' => 'Externo', 'soquete' => 'G9', 'acabamentos' => ['BR', 'PT', 'CF'],
+        ], [['Arandela', 'Arandela G9', 'ARS-531', ['Dimensões' => '110 × 110 mm'], 'arandela-g9']]),
+        'tartaruga' => linha('Tartaruga', 'parede', 65, $jd + [
+            'material' => 'ABS', 'soquete' => 'E27', 'acabamentos' => ['BR', 'PT'],
+        ], [['Arandela', 'Tartaruga', ['branco' => 'ARS-5104 BR', 'preto' => 'ARS-5105 PT'], [], 'tartaruga']]),
+        'plafonier' => linha('Plafonier', 'parede', 65, $jd + [
+            'material' => 'Alumínio', 'soquete' => 'E27', 'acabamentos' => ['BR', 'CB', 'PT', 'AL'],
+        ], [['Plafonier', 'Plafonier', 'ARS-20', [], 'plafonier']]),
     ];
     return $produtos;
 }

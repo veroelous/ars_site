@@ -34,15 +34,14 @@ if ($isFamilia) {
             $trilhos ? ' Versões em trilho de ' . implode(', ', $trilhos) . '.' : ''
         );
     } else {
-        $descricao = trim(sprintf(
-            '%s ARS%s. %s Soquete %s, %d %s de acabamento. Fabricante em Socorro/SP.',
+        $descricao = preg_replace('/\s+/', ' ', trim(sprintf(
+            '%s ARS%s. %s Soquete %s%s. Fabricante em Socorro/SP.',
             $p['nome'],
             $n > 1 ? ' com ' . $n . ' modelos' : '',
             $p['descricao'] ?? '',
             $p['soquete'],
-            count($acab),
-            count($acab) > 1 ? 'opções' : 'opção'
-        ));
+            $acab ? ', ' . count($acab) . (count($acab) > 1 ? ' opções' : ' opção') . ' de acabamento' : ''
+        )));
     }
     $codigos = [];
     foreach ($p['versoes'] as $v) {
@@ -52,7 +51,9 @@ if ($isFamilia) {
     foreach ($p['ficha'] as $k => $v) {
         $props[] = ['@type' => 'PropertyValue', 'name' => $k, 'value' => $v];
     }
-    $props[] = ['@type' => 'PropertyValue', 'name' => 'Acabamentos', 'value' => implode(', ', $acab)];
+    if ($acab) {
+        $props[] = ['@type' => 'PropertyValue', 'name' => 'Acabamentos', 'value' => implode(', ', $acab)];
+    }
 } else {
     $acab = array_values(ARS_ACABAMENTOS_PERFIL);
     $tabelas = $p['codigosVariantes'] ?? ['' => $p['codigos']];
@@ -132,7 +133,7 @@ breadcrumbs($page['breadcrumbs']);
             <?php else: foreach (array_slice(array_diff_key($p['versoes'][0]['specs'], ['Tipo' => 1, 'Acabamentos' => 1, 'Soquete' => 1]), 0, 2, true) as $k => $v): ?>
               <li><strong><?= e($v) ?></strong> <?= e(mb_strtolower($k)) ?></li>
             <?php endforeach; endif; ?>
-            <li><strong><?= count($acab) ?></strong> <?= count($acab) > 1 ? 'acabamentos' : 'acabamento' ?></li>
+            <?php if ($acab): ?><li><strong><?= count($acab) ?></strong> <?= count($acab) > 1 ? 'acabamentos' : 'acabamento' ?></li><?php endif; ?>
           <?php else: ?>
             <li><strong><?= e($p['largura']) ?></strong> largura</li>
             <li><strong><?= e($p['altura']) ?></strong> altura</li>
@@ -189,6 +190,7 @@ breadcrumbs($page['breadcrumbs']);
         </div>
         <div>
           <h2>Acabamentos</h2>
+          <?php if (!$acab): ?><p><?= pending('[ACABAMENTOS A CONFIRMAR]') ?></p><?php endif; ?>
           <ul class="finish-list">
             <?php foreach ($p['acabamentos'] as $sigla): ?>
               <li><span class="finish finish--<?= e(strtolower($sigla)) ?>" aria-hidden="true"></span><?= str_starts_with(ARS_ACABAMENTOS[$sigla], '[') ? pending(ARS_ACABAMENTOS[$sigla]) : e(ARS_ACABAMENTOS[$sigla]) ?></li>
@@ -251,7 +253,7 @@ breadcrumbs($page['breadcrumbs']);
   <?php if ($relacionados): ?>
   <section class="section">
     <div class="wrap">
-      <h2>Outros <?= e(mb_strtolower($isFamilia ? $cat['nome'] : $tipoInfo['nome'])) ?></h2>
+      <h2><?= $slugCat === 'jardim' ? 'Outros produtos de jardim' : 'Outros ' . e(mb_strtolower($isFamilia ? $cat['nome'] : $tipoInfo['nome'])) ?></h2>
       <div class="product-grid">
         <?php foreach ($relacionados as $rs => $r): ?>
           <a class="product-card" href="<?= e(produto_url($rs, $r)) ?>">
@@ -262,7 +264,7 @@ breadcrumbs($page['breadcrumbs']);
           </a>
         <?php endforeach; ?>
       </div>
-      <p><a class="btn btn--orange" href="/produtos/<?= e($slugCat) ?>/">Ver todos os <?= e(mb_strtolower($cat['nome'])) ?></a></p>
+      <p><a class="btn btn--orange" href="/produtos/<?= e($slugCat) ?>/"><?= $slugCat === 'jardim' ? 'Ver toda a linha Jardim' : 'Ver todos os ' . e(mb_strtolower($cat['nome'])) ?></a></p>
     </div>
   </section>
   <?php endif; ?>
