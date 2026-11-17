@@ -36,7 +36,11 @@ $igPosts = instagram_posts(3);
     <div>
       <div class="eyebrow">ARS Iluminação</div>
       <h1 class="hero__title">Ir além de iluminar <em>espaços.</em></h1>
-      <p class="hero__lead">É levar luz às pessoas. Enquanto nosso novo site ganha forma, a ARS segue criando e fabricando soluções de iluminação para todo o Brasil.</p>
+      <p class="hero__lead">É levar luz às pessoas. Desde 2014, a ARS cria e fabrica em Socorro/SP soluções de iluminação com pronta entrega para todo o Brasil.</p>
+      <div class="hero__actions">
+        <a class="btn btn--orange" href="/seja-revendedor/">Seja revendedor</a>
+        <a class="btn btn--ghost" href="/produtos/">Ver produtos</a>
+      </div>
     </div>
 
     <div class="catalog-card" id="catalogo">
@@ -64,10 +68,7 @@ $igPosts = instagram_posts(3);
               <input id="f-email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required maxlength="160">
             </div>
           </div>
-          <div class="consent">
-            <input id="f-consentimento" name="consentimento" type="checkbox" required>
-            <label for="f-consentimento"><?= e(ARS_SITE['consent']) ?></label>
-          </div>
+          <?= consent_field() ?>
           <div class="hp" aria-hidden="true">
             <label for="f-site">Não preencha este campo</label>
             <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">

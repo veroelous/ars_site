@@ -11,6 +11,9 @@ Site da ARS Iluminação em **HTML, CSS, JavaScript puro e PHP 8.2**, feito para
 | Produtos | `/produtos/` | `public_html/produtos/index.php` |
 | Categorias | `/categorias-de-luminarias/` | `public_html/categorias-de-luminarias/index.php` |
 | Contato e orçamento | `/contato-e-orcamento/` | `public_html/contato-e-orcamento/index.php` |
+| Seja revendedor | `/seja-revendedor/` | `public_html/seja-revendedor/index.php` |
+| Onde comprar | `/onde-comprar/` | `public_html/onde-comprar/index.php` |
+| Política de privacidade | `/politica-de-privacidade/` | `public_html/politica-de-privacidade/index.php` |
 
 As URLs são as mesmas do WordPress atual.
 
@@ -27,6 +30,7 @@ public_html/
   api/catalogo.php                   formulário do catálogo → grava contato e libera o PDF
   api/catalogo-download.php          entrega o PDF só com link assinado (30 min)
   api/contato.php                    formulário de contato
+  api/revendedor.php                 cadastro de revendedor (empresa, CNPJ, cidade/UF, perfil)
   admin/leads.php                    exportação dos contatos em CSV (usuário e senha)
   private/                           catálogo PDF, configuração e contatos (bloqueada ao público)
   .htaccess, robots.php, sitemap.php, 404.php
@@ -37,10 +41,10 @@ public_html/
 1. Copie `public_html/includes/config.example.php` para **`/home/USUARIO/ars_private/config.php`**, fora do public_html (recomendado), ou para `public_html/private/config.php`.
 2. Preencha:
    - `catalog_secret`: gere no Terminal do cPanel com `openssl rand -hex 32`;
-   - `notify_email`: quem recebe o aviso de cada contato;
-   - `mail_from`: um e-mail do domínio;
+   - `mail_from`: remetente dos avisos, um e-mail do domínio (o destinatário é o e-mail da ARS em `includes/site.php`);
    - `admin_user` e `admin_pass_hash`: usuário e senha da exportação de contatos;
-   - `instagram_token`: opcional.
+   - `instagram_token`: opcional;
+   - `ga4_id`: opcional, ID do Google Analytics 4.
 3. Se usar `ars_private/` fora do public_html, mova também o `catalogo-ars-iluminacao.pdf` para lá.
 4. No cPanel, em Domínios, ative **"Forçar redirecionamento HTTPS"**.
 
@@ -58,7 +62,7 @@ A publicação nunca apaga `config.php`, os contatos nem o cache. Também dá pa
 
 - **Validação:** feita no navegador e repetida no servidor, com consentimento LGPD, campo-armadilha contra robôs, limite de envios por IP e verificação de origem.
 - **Sem JavaScript:** os formulários funcionam também com o JavaScript desligado.
-- **Gravação e aviso:** cada contato é gravado em `private/leads/leads.jsonl` e avisado por e-mail para `notify_email`.
+- **Gravação e aviso:** cada contato é gravado em `private/leads/leads.jsonl` e avisado por e-mail para o endereço da ARS (`ARS_SITE['email']` em `includes/site.php`).
 - **Exportação:** acesse `/admin/leads.php` com o usuário e a senha da configuração; abre direto no Excel.
 
 ## Instagram

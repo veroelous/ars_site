@@ -8,7 +8,7 @@ Itens que dependem de **aprovação da ARS**, de **credenciais** ou de **configu
 |---|---|---|
 | WhatsApp (botão flutuante e página de contato) | `+55 19 99696-5662` (link `wa.me` da Home atual e bio do Instagram) | `public_html/includes/site.php` → `whatsapp` |
 | Endereço | Estrada de Joaquim de Souza Siqueira, 2099, Oratório, Socorro/SP, CEP 13960-000 | `public_html/includes/site.php` → `address` |
-| E-mail comercial | `comercial@arsiluminacao.com.br` (**já aprovado**) | `public_html/includes/site.php` → `email` |
+| E-mail de contato e avisos de leads | `arsiluminacao@gmail.com` (**definido pela ARS em 17/11/2026**; o `comercial@` foi descartado) | `public_html/includes/site.php` → `email` |
 | Texto do consentimento LGPD | Baseado no aviso de privacidade do formulário atual | `public_html/includes/site.php` → `consent` |
 
 Descartados explicitamente e **não usados**: o telefone `(19) 98304-7385` e o endereço da Rua São João, 33.
@@ -48,6 +48,22 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 - Texto de conversão e mídia do bloco final
 - O formulário, que no WordPress era só um modelo ("configurar Contact Form 7"), **agora funciona**.
 
+## 3b. Fase 1 (17/11/2026): itens para validar
+
+**Home** (`public_html/index.php`): o texto "Enquanto nosso novo site ganha forma…" foi trocado por "Desde 2014, a ARS cria e fabrica em Socorro/SP soluções de iluminação com pronta entrega para todo o Brasil.", montado com afirmações já publicadas pela ARS (página A ARS e Instagram). Também foram adicionados os botões "Seja revendedor" e "Ver produtos".
+
+**Seja revendedor** (`public_html/seja-revendedor/index.php`)
+- Os três diferenciais (produção própria, pronta entrega, entrega para todo o Brasil) foram extraídos das legendas oficiais do Instagram. Falta validar a redação.
+- `[Pedido mínimo, prazos de entrega, formas de pagamento, tabela de preços e materiais de PDV]`
+- Mídia da abertura (foto da fábrica, estoque ou expedição).
+
+**Onde comprar** (`public_html/onde-comprar/index.php`)
+- Lista de revendas autorizadas, para preencher em `ARS_RESELLERS` (`includes/site.php`). Lojas que já exibem a marca na internet (VitaLuz, São Pedro Shopping) **não** foram incluídas sem confirmação da ARS.
+
+**Política de privacidade** (`public_html/politica-de-privacidade/index.php`)
+- CNPJ do controlador. O cadastro público mostra 23.654.084/0001-82 com outro endereço; confirmar qual exibir.
+- Prazo máximo de guarda dos dados.
+
 ## 4. Credenciais e configuração de conta
 
 Tudo fica no `config.php` privado do servidor (modelo em `public_html/includes/config.example.php`), nunca no Git.
@@ -55,7 +71,8 @@ Tudo fica no `config.php` privado do servidor (modelo em `public_html/includes/c
 | O quê | Para quê | Chave no config.php |
 |---|---|---|
 | Segredo do link do catálogo | Assinar o download (obrigatório) | `catalog_secret` |
-| E-mail que recebe os avisos | Aviso imediato de cada novo contato | `notify_email`, `mail_from` |
+| Remetente dos avisos | Os avisos vão para `arsiluminacao@gmail.com` (fixo em `includes/site.php`) | `mail_from` |
+| Google Analytics 4 | Medir visitas e conversões (download, formulários, WhatsApp) | `ga4_id` |
 | Usuário e senha da exportação | Baixar os contatos em `/admin/leads.php` | `admin_user`, `admin_pass_hash` |
 | Token do Instagram | Feed dinâmico das 3 últimas publicações | `instagram_token` |
 | URL do domínio final | SEO, Open Graph, sitemap | `site_url` |

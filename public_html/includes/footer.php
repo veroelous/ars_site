@@ -40,7 +40,7 @@ declare(strict_types=1);
       <img src="/assets/img/mascote-ars.webp" alt="" width="900" height="1027" class="site-footer__mascot" loading="lazy" decoding="async">
     </div>
     <nav class="site-footer__nav" aria-label="Menu do rodapé">
-      <?php foreach (ARS_NAV as $item): ?>
+      <?php foreach (ARS_PAGES as $item): ?>
         <a href="<?= e($item['href']) ?>"><?= e($item['label']) ?></a>
       <?php endforeach; ?>
     </nav>

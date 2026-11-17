@@ -11,8 +11,8 @@ const ARS_SITE = [
     'name'        => 'ARS Iluminação',
     'tagline'     => 'Ir além de iluminar espaços.',
     'description' => 'ARS Iluminação: fabricante de soluções de iluminação em Socorro/SP, com entrega para todo o Brasil. Baixe o catálogo e fale com a equipe comercial.',
-    // Aprovado para manutenção pelo responsável.
-    'email'       => 'comercial@arsiluminacao.com.br',
+    // E-mail público e destino dos avisos de novos contatos (definido pela ARS em 17/11/2026).
+    'email'       => 'arsiluminacao@gmail.com',
     'instagram'   => [
         'handle' => '@ars.iluminacao',
         'url'    => 'https://www.instagram.com/ars.iluminacao/',
@@ -40,13 +40,36 @@ const ARS_SITE = [
     'consent'     => 'Autorizo a ARS Iluminação a usar meus dados para contato comercial. Meus dados não serão vendidos a terceiros.',
 ];
 
+/** Menu principal (cabeçalho). */
 const ARS_NAV = [
     ['href' => '/', 'label' => 'Início'],
     ['href' => '/a-ars/', 'label' => 'A ARS'],
     ['href' => '/produtos/', 'label' => 'Produtos'],
-    ['href' => '/categorias-de-luminarias/', 'label' => 'Categorias'],
-    ['href' => '/contato-e-orcamento/', 'label' => 'Contato e orçamento'],
+    ['href' => '/seja-revendedor/', 'label' => 'Seja revendedor'],
+    ['href' => '/onde-comprar/', 'label' => 'Onde comprar'],
+    ['href' => '/contato-e-orcamento/', 'label' => 'Contato'],
 ];
+
+/** Todas as páginas públicas: menu do rodapé e sitemap.xml. */
+const ARS_PAGES = [
+    ['href' => '/', 'label' => 'Início', 'priority' => '1.0'],
+    ['href' => '/a-ars/', 'label' => 'A ARS', 'priority' => '0.7'],
+    ['href' => '/produtos/', 'label' => 'Produtos', 'priority' => '0.9'],
+    ['href' => '/categorias-de-luminarias/', 'label' => 'Categorias', 'priority' => '0.7'],
+    ['href' => '/seja-revendedor/', 'label' => 'Seja revendedor', 'priority' => '0.9'],
+    ['href' => '/onde-comprar/', 'label' => 'Onde comprar', 'priority' => '0.8'],
+    ['href' => '/contato-e-orcamento/', 'label' => 'Contato e orçamento', 'priority' => '0.8'],
+    ['href' => '/politica-de-privacidade/', 'label' => 'Política de privacidade', 'priority' => '0.3'],
+];
+
+/**
+ * Revendas autorizadas exibidas em /onde-comprar/.
+ * Preencher SOMENTE com lojas confirmadas pela ARS e autorizadas a aparecer no site.
+ * Exemplo:
+ *   ['uf' => 'SP', 'cidade' => 'Mogi das Cruzes', 'nome' => 'Nome da loja',
+ *    'endereco' => 'Rua ..., 123', 'telefone' => '(11) 0000-0000', 'site' => 'https://...'],
+ */
+const ARS_RESELLERS = [];
 
 /**
  * Publicações do Instagram exibidas sem token da API (via embed oficial).

@@ -23,7 +23,7 @@ if (is_string($in['site'] ?? null) && trim($in['site']) !== '') {
     respond(true, [], $back . '?enviado=1');
 }
 
-[$data, $errors] = validate_lead($in, true);
+[$data, $errors] = validate_lead($in, 'contato');
 if ($errors) {
     respond(false, ['message' => 'Confira os campos destacados.', 'errors' => $errors], $back . '?erro=1', 422);
 }

@@ -1555,3 +1555,135 @@ li {
     height: 56px;
   }
 }
+
+/* ---------- Fase 1: seleção, texto longo, revendas ---------- */
+
+.field select {
+  width: 100%;
+  height: 49px;
+  padding: 0 40px 0 15px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 15px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%2317174b' stroke-width='1.8' d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  outline: none;
+  cursor: pointer;
+}
+
+.contact-form .field select,
+.resellers-filter select {
+  border: 1px solid #d9d9e7;
+  background-color: #fbfbfe;
+  color: var(--ink);
+}
+
+.contact-form .field select:focus {
+  border-color: var(--ars-orange-2);
+  box-shadow: 0 0 0 3px rgba(239, 107, 50, 0.16);
+}
+
+.contact-form .field--error select {
+  border-color: #d2452b;
+}
+
+.optional {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.consent a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.catalog-form .consent a:hover {
+  color: var(--white);
+}
+
+.note a {
+  color: var(--ars-orange-2);
+}
+
+.prose {
+  max-width: 760px;
+}
+
+.prose h2 {
+  margin: 40px 0 12px;
+  font-size: clamp(22px, 2.4vw, 28px);
+}
+
+.prose h2:first-of-type {
+  margin-top: 20px;
+}
+
+.prose p,
+.prose li {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.prose ul {
+  padding-left: 1.2em;
+}
+
+.prose li {
+  margin: 6px 0;
+}
+
+.prose li::marker {
+  color: var(--ars-orange-2);
+}
+
+.prose strong {
+  color: var(--ink);
+}
+
+.prose a {
+  color: var(--ars-orange-2);
+}
+
+.resellers-filter {
+  max-width: 280px;
+  margin-bottom: 8px;
+}
+
+.resellers {
+  margin-top: 36px;
+}
+
+.resellers > h3 {
+  color: var(--ars-navy);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+
+.resellers .cards {
+  margin-top: 14px;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.hero__actions .btn {
+  margin-top: 0;
+}
+
+.btn--ghost {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: var(--white);
+}
+
+.btn--ghost:hover {
+  border-color: var(--white);
+  background: rgba(255, 255, 255, 0.08);
+}

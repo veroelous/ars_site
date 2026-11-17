@@ -24,7 +24,7 @@ if (is_string($in['site'] ?? null) && trim($in['site']) !== '') {
     respond(true, ['downloadUrl' => null], '/#catalogo');
 }
 
-[$data, $errors] = validate_lead($in, false);
+[$data, $errors] = validate_lead($in, 'catalogo');
 if ($errors) {
     respond(false, ['message' => 'Confira os campos destacados.', 'errors' => $errors], '/?erro=1#catalogo', 422);
 }

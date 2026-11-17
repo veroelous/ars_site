@@ -41,7 +41,7 @@ function csv_cell(mixed $value): string
 
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename="contatos-ars-' . date('Y-m-d') . '.csv"');
-echo "\xEF\xBB\xBF" . implode(';', ['data', 'origem', 'nome', 'whatsapp', 'email', 'empresa', 'mensagem', 'consentimento']) . "\r\n";
+echo "\xEF\xBB\xBF" . implode(';', ['data', 'origem', 'nome', 'whatsapp', 'email', 'empresa', 'cnpj', 'cidade', 'uf', 'perfil', 'mensagem', 'consentimento']) . "\r\n";
 foreach ($rows as $line) {
     $l = json_decode($line, true);
     if (!is_array($l)) {
@@ -49,6 +49,7 @@ foreach ($rows as $line) {
     }
     echo implode(';', array_map('csv_cell', [
         $l['criadoEm'] ?? '', $l['origem'] ?? '', $l['nome'] ?? '', $l['whatsapp'] ?? '',
-        $l['email'] ?? '', $l['empresa'] ?? '', $l['mensagem'] ?? '', $l['consentimento']['em'] ?? '',
+        $l['email'] ?? '', $l['empresa'] ?? '', $l['cnpj'] ?? '', $l['cidade'] ?? '', $l['uf'] ?? '',
+        $l['perfil'] ?? '', $l['mensagem'] ?? '', $l['consentimento']['em'] ?? '',
     ])) . "\r\n";
 }

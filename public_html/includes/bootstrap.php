@@ -29,12 +29,12 @@ function ars_config(): array
         'site_url'          => '',
         'noindex'           => false,
         'catalog_secret'    => '',
-        'notify_email'      => ARS_SITE['email'],
         'mail_from'         => 'site@arsiluminacao.com.br',
         'admin_user'        => '',
         'admin_pass_hash'   => '',
         'instagram_token'   => '',
         'instagram_ttl'     => 3600,
+        'ga4_id'            => '',
     ];
     $file = ars_private_dir() . '/config.php';
     $loaded = is_file($file) ? require $file : [];
@@ -83,6 +83,16 @@ function ars_private_path(string $sub): string
         @mkdir($dir, 0700, true);
     }
     return $dir;
+}
+
+/** Caixa de consentimento LGPD com link para a Política de Privacidade. */
+function consent_field(): string
+{
+    return '<div class="consent">'
+        . '<input id="f-consentimento" name="consentimento" type="checkbox" required>'
+        . '<label for="f-consentimento">' . e(ARS_SITE['consent'])
+        . ' <a href="/politica-de-privacidade/" target="_blank">Política de Privacidade</a>.</label>'
+        . '</div>';
 }
 
 /** Marcador de conteúdo pendente de aprovação da ARS (texto). */

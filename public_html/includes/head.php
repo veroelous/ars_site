@@ -34,6 +34,27 @@ $orgJsonLd = [
         'addressCountry'  => 'BR',
     ],
 ];
+$jsonLd = [$orgJsonLd];
+$path = $page['path'] ?? '/';
+if ($path === '/') {
+    $jsonLd[] = [
+        '@context' => 'https://schema.org',
+        '@type'    => 'WebSite',
+        'name'     => ARS_SITE['name'],
+        'url'      => $base . '/',
+        'inLanguage' => 'pt-BR',
+    ];
+} elseif (!empty($page['title'])) {
+    $jsonLd[] = [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Início', 'item' => $base . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => $page['title'], 'item' => $canonical],
+        ],
+    ];
+}
+$ga4 = preg_replace('/[^A-Z0-9\-]/', '', strtoupper((string) ars_config()['ga4_id']));
 ?><!doctype html>
 <html lang="pt-BR">
 <head>
@@ -59,7 +80,13 @@ $orgJsonLd = [
 <link rel="preload" as="image" href="<?= e($pre['href']) ?>"<?= isset($pre['srcset']) ? ' imagesrcset="' . e($pre['srcset']) . '" imagesizes="100vw"' : '' ?>>
 <?php endforeach; endif; ?>
 <link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
-<script type="application/ld+json"><?= json_encode($orgJsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?></script>
+<?php foreach ($jsonLd as $ld): ?>
+<script type="application/ld+json"><?= json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?></script>
+<?php endforeach; ?>
+<?php if ($ga4 !== '' && !ars_noindex()): ?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4) ?>"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= e($ga4) ?>');</script>
+<?php endif; ?>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>

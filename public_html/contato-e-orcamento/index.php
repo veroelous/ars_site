@@ -58,10 +58,7 @@ site_header('solid', '/contato-e-orcamento/');
                 <textarea id="f-mensagem" name="mensagem" placeholder="Conte o que você precisa" required maxlength="3000"></textarea>
               </div>
             </div>
-            <div class="consent">
-              <input id="f-consentimento" name="consentimento" type="checkbox" required>
-              <label for="f-consentimento"><?= e(ARS_SITE['consent']) ?></label>
-            </div>
+          <?= consent_field() ?>
             <div class="hp" aria-hidden="true">
               <label for="f-site">Não preencha este campo</label>
               <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">

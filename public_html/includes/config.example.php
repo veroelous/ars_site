@@ -18,9 +18,9 @@ return [
     // Gere em: Terminal do cPanel → openssl rand -hex 32
     'catalog_secret' => '',
 
-    // Quem recebe o aviso de novo contato e o remetente das mensagens.
-    'notify_email' => 'comercial@arsiluminacao.com.br',
-    'mail_from'    => 'site@arsiluminacao.com.br',
+    // Remetente dos avisos de novo contato (precisa ser um e-mail do domínio).
+    // O destinatário é o e-mail da ARS em includes/site.php.
+    'mail_from' => 'site@arsiluminacao.com.br',
 
     // Acesso à exportação dos contatos em /admin/leads.php (deixe em branco para desativar).
     // Gere o hash em: php -r "echo password_hash('SUA-SENHA', PASSWORD_DEFAULT);"
@@ -30,4 +30,7 @@ return [
     // Token de longa duração da Instagram API (conta @ars.iluminacao). Em branco = embeds fixos.
     'instagram_token' => '',
     'instagram_ttl'   => 3600,
+
+    // ID do Google Analytics 4 (ex.: G-XXXXXXXXXX). Em branco = sem Analytics.
+    'ga4_id' => '',
 ];

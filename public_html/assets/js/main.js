@@ -2,10 +2,14 @@
 (function () {
   "use strict";
 
-  /* Eventos para medição futura (Google Tag Manager / GA4 leem window.dataLayer). */
+  /* Eventos de medição: vão para o GA4 quando ele estiver configurado. */
   function track(event, params) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(Object.assign({ event: event }, params || {}));
+    if (typeof window.gtag === "function") {
+      window.gtag("event", event, params || {});
+    } else {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign({ event: event }, params || {}));
+    }
   }
 
   document.addEventListener("click", function (ev) {
@@ -28,6 +32,18 @@
     });
   });
 
+  document.querySelectorAll("input[name='cnpj']").forEach(function (input) {
+    input.addEventListener("input", function () {
+      var d = input.value.replace(/\D+/g, "").slice(0, 14);
+      var out = d.slice(0, 2);
+      if (d.length > 2) out += "." + d.slice(2, 5);
+      if (d.length > 5) out += "." + d.slice(5, 8);
+      if (d.length > 8) out += "/" + d.slice(8, 12);
+      if (d.length > 12) out += "-" + d.slice(12);
+      input.value = out;
+    });
+  });
+
   /* ---------- Validação (as mesmas regras do servidor) ---------- */
   function validWhatsapp(value) {
     var d = value.replace(/\D+/g, "");
@@ -38,17 +54,41 @@
     return d.length === 10 || d.charAt(2) === "9";
   }
 
+  function validCnpj(value) {
+    var d = value.replace(/\D+/g, "");
+    if (d.length !== 14 || /^(\d)\1{13}$/.test(d)) return false;
+    for (var len = 12; len <= 13; len++) {
+      var sum = 0, weight = len - 7;
+      for (var i = 0; i < len; i++) {
+        sum += parseInt(d.charAt(i), 10) * weight--;
+        if (weight < 2) weight = 9;
+      }
+      var digit = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+      if (parseInt(d.charAt(len), 10) !== digit) return false;
+    }
+    return true;
+  }
+
   function validate(form) {
     var errors = {};
     var f = form.elements;
     if (f.nome.value.trim().length < 2) errors.nome = "Informe seu nome.";
     if (!validWhatsapp(f.whatsapp.value)) errors.whatsapp = "Informe um WhatsApp válido com DDD.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.value.trim())) errors.email = "Informe um e-mail válido.";
-    if (f.mensagem && f.mensagem.value.trim().length < 5) errors.mensagem = "Conte brevemente o que você precisa.";
+    var kind = form.dataset.kind;
+    if (kind === "contato" && f.mensagem.value.trim().length < 5) errors.mensagem = "Conte brevemente o que você precisa.";
+    if (kind === "revendedor") {
+      if (f.empresa.value.trim().length < 2) errors.empresa = "Informe o nome da empresa.";
+      if (f.cnpj.value.trim() && !validCnpj(f.cnpj.value)) errors.cnpj = "Confira o CNPJ (14 números).";
+      if (f.cidade.value.trim().length < 2) errors.cidade = "Informe a cidade.";
+      if (!f.uf.value) errors.uf = "Selecione o estado.";
+      if (!f.perfil.value) errors.perfil = "Selecione o tipo de negócio.";
+    }
     if (!f.consentimento.checked) {
-      errors.consentimento = f.mensagem
-        ? "É preciso autorizar o contato para enviar a mensagem."
-        : "É preciso autorizar o contato para liberar o catálogo.";
+      errors.consentimento = {
+        catalogo: "É preciso autorizar o contato para liberar o catálogo.",
+        revendedor: "É preciso autorizar o contato para enviar o cadastro."
+      }[kind] || "É preciso autorizar o contato para enviar a mensagem.";
     }
     return errors;
   }
@@ -79,6 +119,16 @@
       if (!first) first = input;
     });
     if (first) first.focus();
+  }
+
+  /* ---------- Filtro de revendas por estado ---------- */
+  var ufFilter = document.querySelector(".js-uf-filter");
+  if (ufFilter) {
+    ufFilter.addEventListener("change", function () {
+      document.querySelectorAll(".resellers[data-uf]").forEach(function (block) {
+        block.hidden = ufFilter.value !== "" && block.dataset.uf !== ufFilter.value;
+      });
+    });
   }
 
   /* ---------- Envio dos formulários ---------- */
