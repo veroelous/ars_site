@@ -84,11 +84,11 @@ A fonte é `public_html/private/catalogo-ars-iluminacao.pdf` (68 páginas, texto
 5. **Conferência:** gere `docs/REVISAO-<LINHA>.md` com tabela ☐ por produto e pontos de atenção (códigos repetidos, siglas ambíguas). Atualize `docs/PENDENCIAS.md`.
 6. **Resultado:** o sitemap inclui os produtos automaticamente. Teste local e no ar.
 
-**Feito:** Perfis de LED (20), Spots (14 famílias, 47 versões), Pendentes (32 páginas, 67 modelos; usam `linha()`, com tipo de peça, specs por versão e paleta própria) Arandelas (14 modelos; `linha()` com `'categoria' => 'arandelas'` no `$base`) e Embutidos (13 modelos em 5 páginas; `linha()` com código por acabamento/lâmpada em lista e `destaques` no `$base`). **Próximos:** Módulos de sobrepor, Jardim, Vidros, Coleção Bonalux.
+**Feito:** Perfis de LED (20), Spots (14 famílias, 47 versões), Pendentes (32 páginas, 67 modelos; usam `linha()`, com tipo de peça, specs por versão e paleta própria) Arandelas (14 modelos; `linha()` com `'categoria' => 'arandelas'` no `$base`) e Embutidos (13 modelos em 5 páginas; `linha()` com código por acabamento/lâmpada em lista e `destaques` no `$base`) e Módulos de sobrepor (12 modelos em 6 páginas). **Próximos:** Jardim, Vidros, Coleção Bonalux.
 
 A skill reutilizável **catalogo-pdf-para-site** tem os scripts de extração de fotos, de gravação em WebP e da lista de conferência.
 
-**Siglas de acabamento:** BR branco, PT preto, AL alumínio, CB cobre (por confirmar), DR dourado, CH/CP champagne. A paleta de 8 cores (Bronze AVL, Verde AVL, Preto, Pedra, Dourado, Champagne, Branco, Off White) usa as chaves internas BZ, VD, PT, PD, DR, CP, BR e OW. Cores extras da Iris: AZ Azul Bebê, RS Rosa, AB Abacate.
+**Siglas de acabamento:** BR branco, PT preto, AL alumínio, CB cobre (por confirmar), DR dourado, CH/CP champagne. A paleta de 8 cores (Bronze AVL, Verde AVL, Preto, Pedra, Dourado, Champagne, Branco, Off White) usa as chaves internas BZ, VD, PT, PD, DR, CP, BR e OW. Cores extras da Iris: AZ Azul Bebê, RS Rosa, AB Abacate. CF (módulos de sobrepor, marrom) ainda sem nome: aparece como pendente.
 
 ## Commits
 

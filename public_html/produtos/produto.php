@@ -191,7 +191,7 @@ breadcrumbs($page['breadcrumbs']);
           <h2>Acabamentos</h2>
           <ul class="finish-list">
             <?php foreach ($p['acabamentos'] as $sigla): ?>
-              <li><span class="finish finish--<?= e(strtolower($sigla)) ?>" aria-hidden="true"></span><?= e(ARS_ACABAMENTOS[$sigla]) ?></li>
+              <li><span class="finish finish--<?= e(strtolower($sigla)) ?>" aria-hidden="true"></span><?= str_starts_with(ARS_ACABAMENTOS[$sigla], '[') ? pending(ARS_ACABAMENTOS[$sigla]) : e(ARS_ACABAMENTOS[$sigla]) ?></li>
             <?php endforeach; ?>
           </ul>
           <p class="note">Fonte: Catálogo ARS, página <?= (int) $p['pagina'] ?>. Confirme códigos, acabamentos e disponibilidade com a equipe comercial.</p>

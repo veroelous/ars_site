@@ -15,6 +15,8 @@ const ARS_ACABAMENTOS = [
     'BZ' => 'Bronze AVL', 'VD' => 'Verde AVL', 'PD' => 'Pedra', 'DR' => 'Dourado', 'CP' => 'Champagne', 'OW' => 'Off White',
     // Cores extras da Arandela Iris.
     'AZ' => 'Azul Bebê', 'RS' => 'Rosa', 'AB' => 'Abacate',
+    // Módulos de sobrepor: sigla impressa sem o nome (cor marrom na bolinha).
+    'CF' => '[CF: NOME A CONFIRMAR]',
 ];
 
 /** Acabamentos dos perfis de LED (os códigos seguem esta ordem). */
@@ -58,7 +60,14 @@ const ARS_CATEGORIAS = [
         'pagina'    => 45,
         'online'    => true,
     ],
-    'modulos-de-sobrepor' => ['nome' => 'Módulos de sobrepor', 'resumo' => 'Módulos e cilindros de sobrepor.', 'imagem' => 'modulos-de-sobrepor.webp', 'pagina' => 47, 'online' => false],
+    'modulos-de-sobrepor' => [
+        'nome'      => 'Módulos de sobrepor',
+        'resumo'    => 'Módulos quadrados e cilíndricos de sobrepor, de 1 a 4 focos.',
+        'descricao' => 'Módulos de sobrepor quadrados (Kube), cilíndricos (Tube) e em alumínio com 1 a 4 focos (linha Apex), para lâmpadas MR16, AR70 e PAR20, em três acabamentos.',
+        'imagem'    => 'modulos-de-sobrepor.webp',
+        'pagina'    => 47,
+        'online'    => true,
+    ],
     'spots' => [
         'nome'      => 'Spots',
         'resumo'    => 'Spots de sobrepor de 1 a 4 focos, com base redonda ou trilho.',
@@ -92,6 +101,10 @@ const ARS_TIPOS = [
     'embutidos' => [
         'abs'  => ['nome' => 'Spots de embutir ABS', 'uso' => 'Em ABS com tratamento UV, que não amarela. Acabamentos preto e branco.'],
         'axis' => ['nome' => 'Spots de embutir em alumínio Axis', 'uso' => 'Em alumínio, de 1 a 4 focos, para GU10 / MR16 (Axis 16) ou E27 / PAR20 (Axis 20).'],
+    ],
+    'modulos-de-sobrepor' => [
+        'focos-unicos' => ['nome' => 'Kube e Tube', 'uso' => 'Módulos de 1 foco: quadrado (Kube) ou cilíndricos (Tube).'],
+        'apex'         => ['nome' => 'Módulos de sobrepor em alumínio Apex', 'uso' => 'Em alumínio, de 1 a 4 focos, para GU10 / MR16 (Apex 16) ou GU10 / AR70 (Apex 70).'],
     ],
     'pendentes' => [
         'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
@@ -563,6 +576,40 @@ function ars_produtos(): array
             ['Duplo', 'Axis 20.2', 'AXS202', $F('195 × 105 mm', 2), 'axis-20-2'],
             ['Triplo', 'Axis 20.3', 'AXS203', $F('275 × 105 mm', 3), 'axis-20-3'],
             ['Quádruplo', 'Axis 20.4', 'AXS204', $F('195 × 195 mm', 4), 'axis-20-4'],
+        ]),
+    ];
+
+    // Módulos de sobrepor: catálogo p. 47 (Kube e Tube) e 48 (alumínio Apex).
+    $mod = ['categoria' => 'modulos-de-sobrepor', 'acabamentos' => ['BR', 'PT', 'CF']];
+    $um = static fn(string $nome, string $codigo, array $specs, string $img, string $soquete, string $descricao)
+        => linha('Módulo de sobrepor ' . $nome, 'focos-unicos', 47, $mod + ['soquete' => $soquete, 'descricao' => $descricao], [['Módulo de sobrepor', $nome, $codigo, $specs + ['Focos' => '1'], $img]]);
+    $apx = $mod + ['material' => 'Alumínio', 'observacao' => $NAL];
+    $produtos += [
+        'modulo-de-sobrepor-kube-16' => $um('Kube 16', 'ARS-KB80', ['Largura' => '60 mm', 'Altura' => '80 mm'], 'kube-16', 'GU10 / MR16',
+            'Módulo de sobrepor quadrado para lâmpada MR16 com soquete GU10.'),
+        'modulo-de-sobrepor-tube-16' => $um('Tube 16', 'ARS-TB16', ['Diâmetro' => '56 mm', 'Altura' => '80 mm'], 'tube-16', 'GU10 / MR16',
+            'Módulo de sobrepor cilíndrico para lâmpada MR16 com soquete GU10.'),
+        'modulo-de-sobrepor-tube-70' => $um('Tube 70', 'ARS-TB70', ['Diâmetro' => '75 mm', 'Altura' => '80 mm'], 'tube-70', 'GU10 / AR70',
+            'Módulo de sobrepor cilíndrico para lâmpada AR70 com soquete GU10.'),
+        'modulo-de-sobrepor-tube-20' => $um('Tube 20', 'ARS-TB20', ['Diâmetro' => '75 mm', 'Altura' => '110 mm'], 'tube-20', 'E27 / PAR20',
+            'Módulo de sobrepor cilíndrico para lâmpada PAR20 com soquete E27.'),
+        'modulo-de-sobrepor-apex-16' => linha('Módulo de sobrepor Apex 16', 'apex', 48, $apx + [
+            'descricao' => 'Módulo de sobrepor em alumínio para lâmpada MR16 com soquete GU10, em versões de 1 a 4 focos.',
+            'soquete' => 'GU10 / MR16',
+        ], [
+            ['Simples', 'Apex 16.1', 'APX161', ['Dimensões' => '90 × 90 × 80 mm', 'Focos' => '1'], 'apex-16-1'],
+            ['Duplo', 'Apex 16.2', 'APX162', ['Dimensões' => '180 × 90 × 80 mm', 'Focos' => '2'], 'apex-16-2'],
+            ['Triplo', 'Apex 16.3', 'APX163', ['Dimensões' => '260 × 90 × 80 mm', 'Focos' => '3'], 'apex-16-3'],
+            ['Quádruplo', 'Apex 16.4', 'APX164', ['Dimensões' => '180 × 180 × 80 mm', 'Focos' => '4'], 'apex-16-4'],
+        ]),
+        'modulo-de-sobrepor-apex-70' => linha('Módulo de sobrepor Apex 70', 'apex', 48, $apx + [
+            'descricao' => 'Módulo de sobrepor em alumínio para lâmpada AR70 com soquete GU10, em versões de 1 a 4 focos.',
+            'soquete' => 'GU10 / AR70',
+        ], [
+            ['Simples', 'Apex 70.1', 'APX701', ['Dimensões' => '110 × 110 × 80 mm', 'Focos' => '1'], 'apex-70-1'],
+            ['Duplo', 'Apex 70.2', 'APX702', ['Dimensões' => '210 × 110 × 80 mm', 'Focos' => '2'], 'apex-70-2'],
+            ['Triplo', 'Apex 70.3', 'APX703', ['Dimensões' => '310 × 110 × 80 mm', 'Focos' => '3'], 'apex-70-3'],
+            ['Quádruplo', 'Apex 70.4', 'APX704', ['Dimensões' => '210 × 210 × 80 mm', 'Focos' => '4'], 'apex-70-4'],
         ]),
     ];
     return $produtos;
