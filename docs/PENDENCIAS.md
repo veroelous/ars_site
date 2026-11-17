@@ -70,7 +70,8 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 - **Categorias corrigidas:** passaram a seguir o sumário do catálogo (Perfis de LED, Coleção Bonalux, Arandelas, Pendentes, Embutidos, Módulos de sobrepor, Spots, Jardim, Vidros). `/categorias-de-luminarias/` redireciona para `/produtos/`.
 - **Spots no ar:** a linha tem 14 famílias e 47 versões (`/produtos/spots/…`). Falta a ARS conferir, usando **`docs/REVISAO-SPOTS.md`**.
 - **Pendentes no ar:** a linha tem 67 modelos em 32 páginas, com 10 linhas e coleções e 22 modelos avulsos. Os textos de apresentação das linhas são os oficiais do catálogo. Falta a ARS conferir, usando **`docs/REVISAO-PENDENTES.md`**, que tem 8 pontos de atenção.
-- **Próximas linhas:** as outras 6 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
+- **Arandelas no ar:** a linha tem 14 modelos (`/produtos/arandelas/…`). Falta a ARS conferir, usando **`docs/REVISAO-ARANDELAS.md`** (7 pontos de atenção; a Iris está sem código no catálogo).
+- **Próximas linhas:** as outras 5 categorias aparecem com foto e link para o catálogo em PDF, até ganharem páginas próprias.
 - **Dados da contracapa do catálogo:**
   - O endereço (Estrada Joaquim de Souza Siqueira, 2099, Bairro Oratório, Socorro/SP) confirma o que o site usa.
   - Aparece um segundo telefone, (19) 99935-9225; falta definir se entra no site.

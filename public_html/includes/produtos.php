@@ -13,6 +13,8 @@ const ARS_ACABAMENTOS = [
     'BR' => 'Branco', 'CB' => 'Cobre', 'PT' => 'Preto', 'AL' => 'Alumínio',
     // Paleta das linhas Essenza, Nimbo, Kube, Orbe e Vernazza (legenda impressa no catálogo).
     'BZ' => 'Bronze AVL', 'VD' => 'Verde AVL', 'PD' => 'Pedra', 'DR' => 'Dourado', 'CP' => 'Champagne', 'OW' => 'Off White',
+    // Cores extras da Arandela Iris.
+    'AZ' => 'Azul Bebê', 'RS' => 'Rosa', 'AB' => 'Abacate',
 ];
 
 /** Acabamentos dos perfis de LED (os códigos seguem esta ordem). */
@@ -32,7 +34,14 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'colecao-bonalux' => ['nome' => 'Coleção Bonalux', 'resumo' => 'Linhas decorativas da coleção Bonalux, do Grupo ARS.', 'imagem' => 'colecao-bonalux.webp', 'pagina' => 13, 'online' => false],
-    'arandelas'       => ['nome' => 'Arandelas', 'resumo' => 'Arandelas para parede em diversos modelos e acabamentos.', 'imagem' => 'arandelas.webp', 'pagina' => 22, 'online' => false],
+    'arandelas' => [
+        'nome'      => 'Arandelas',
+        'resumo'    => 'Arandelas para parede em diversos modelos e acabamentos.',
+        'descricao' => 'Arandelas de parede com globo, cúpula ou lâmpada aparente, para soquetes E27, G9 e GU10, em diversos acabamentos.',
+        'imagem'    => 'arandelas.webp',
+        'pagina'    => 22,
+        'online'    => true,
+    ],
     'pendentes' => [
         'nome'      => 'Pendentes',
         'resumo'    => 'Pendentes, trilhos e arandelas em linhas com desenho próprio.',
@@ -67,6 +76,11 @@ const ARS_TIPOS = [
         'e27'   => ['nome' => 'Spots para soquete E27', 'uso' => 'Spots de sobrepor para lâmpadas com base E27, em base redonda ou trilho.'],
         'gu10'  => ['nome' => 'Spots para soquete GU10', 'uso' => 'Para lâmpadas dicroicas e LED GU10.'],
         'par20' => ['nome' => 'Spots para E27 / PAR20', 'uso' => 'Corpo maior, para lâmpadas PAR20 com base E27.'],
+    ],
+    'arandelas' => [
+        'globo'    => ['nome' => 'Arandelas com globo', 'uso' => 'Globo difusor para luz suave no ambiente.'],
+        'cupula'   => ['nome' => 'Arandelas com cúpula', 'uso' => 'Cúpula de alumínio ou tecido.'],
+        'aparente' => ['nome' => 'Lâmpada aparente e foco', 'uso' => 'Modelos com a lâmpada à mostra ou com foco direcionado.'],
     ],
     'pendentes' => [
         'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
@@ -182,7 +196,7 @@ function linha(string $nome, string $grupo, int $pagina, array $base, array $ite
         $ficha['Lâmpada'] = $base['observacao'];
     }
     return [
-        'categoria'   => 'pendentes',
+        'categoria'   => $base['categoria'] ?? 'pendentes',
         'tipo'        => $grupo,
         'nome'        => $nome,
         'descricao'   => $base['descricao'] ?? null,
@@ -458,6 +472,39 @@ function ars_produtos(): array
             ['Pendente', 'Diamante G', 'ARS-156', ['Dimensões' => '210 × 260 mm'], 'diamante-g'],
         ]),
     ];
+
+    // Arandelas: catálogo p. 22–26. Uma página por modelo.
+    $ar = static fn(string $nome, string $grupo, int $pag, string $codigo, array $specs, string $img, array $base)
+        => linha($nome, $grupo, $pag, $base + ['categoria' => 'arandelas'], [['Arandela', $nome, $codigo, $specs, $img]]);
+    $IO = ['Interruptor' => 'Opcional'];
+    $produtos += [
+        'arandela-iris' => $ar('Arandela Iris', 'globo', 22, '[CÓDIGO A CONFIRMAR]', ['Dimensões' => '160 × 210 mm', 'Globo' => 'Ø 100 mm'], 'iris', $tec + [
+            'descricao' => 'Com formas orgânicas e delicadas, combina a suavidade do globo com uma base de contornos fluidos, criando uma peça elegante e de presença sofisticada.',
+            'soquete' => 'G9', 'acabamentos' => array_merge($P8, ['AZ', 'RS', 'AB']),
+        ]),
+        'arandela-alva' => $ar('Arandela Alva', 'globo', 23, 'ARS-ALVA', ['Diâmetro' => '120 mm'], 'alva', $tec + [
+            'descricao' => 'Com formas circulares, esta peça combina a suavidade do globo com uma base marcante, criando um visual elegante.',
+            'soquete' => 'G9', 'acabamentos' => $P8,
+        ]),
+        'arandela-duetto' => $ar('Arandela Duetto', 'globo', 24, 'ARS-DUETTO', ['Dimensões' => '200 × 180 mm', 'Globo' => 'Ø 100 mm', 'Articulada' => 'Sim'], 'duetto', $tec + [
+            'descricao' => 'Une luz difusa e iluminação direcionável em uma única peça, combinando funcionalidade e design contemporâneo.',
+            'soquete' => 'G9 / GU10 · MR16', 'acabamentos' => $P8, 'observacao' => $NAL,
+        ]),
+        'arandela-nexo' => $ar('Arandela Nexo', 'globo', 24, 'ARS-NEXO', ['Diâmetro' => '120 mm'], 'nexo', $tec + [
+            'descricao' => 'Com formas sobrepostas e globo difusor, cria uma iluminação suave em um design compacto, elegante e marcante.',
+            'soquete' => 'G9', 'acabamentos' => $P8, 'observacao' => $NAL,
+        ]),
+        'arandela-miami' => $ar('Arandela Miami', 'cupula', 23, 'ARS-766', $D(190, 165), 'miami', ['soquete' => 'E27', 'acabamentos' => $P8, 'observacao' => $NAL]),
+        'arandela-cora' => $ar('Arandela Cora', 'cupula', 25, 'ARS-CORA', ['Dimensões' => '130 × 140 mm', 'Cúpula' => 'Alumínio'], 'cora', ['soquete' => 'E27', 'acabamentos' => $P8]),
+        'arandela-cora-due' => $ar('Arandela Cora Due', 'cupula', 25, 'ARS-CORADUE', ['Dimensões' => '280 × 280 mm', 'Cúpula' => 'Alumínio'] + $IO, 'cora-due', ['soquete' => 'E27', 'acabamentos' => $P8]),
+        'arandela-aura-i' => $ar('Arandela Aura I', 'cupula', 25, 'ARS-AURA1', ['Dimensões' => '240 × 250 mm', 'Cúpula' => 'Tecido, 3 opções de cor'] + $IO, 'aura-1', ['soquete' => 'E27', 'acabamentos' => $P8]),
+        'arandela-aura-ii' => $ar('Arandela Aura II', 'cupula', 25, 'ARS-AURA2', ['Dimensões' => '240 × 290 mm', 'Cúpula' => 'Tecido, 3 opções de cor'] + $IO, 'aura-2', ['soquete' => 'E27', 'acabamentos' => $P8]),
+        'arandela-focco' => $ar('Arandela Focco', 'aparente', 23, 'ARS-FOCCO', $D(210, 50), 'focco', ['soquete' => 'GU10 · MR11', 'acabamentos' => $P8, 'observacao' => $NAL]),
+        'arandela-copo' => $ar('Arandela Copo', 'aparente', 26, 'ARS-830', [], 'copo', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'arandela-copo-u' => $ar('Arandela Copo U', 'aparente', 26, 'ARS-730', [], 'copo-u', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'arandela-vello' => $ar('Arandela Vello', 'aparente', 26, 'ARS-VL260', ['Dimensões' => '260 × 200 mm'], 'vello', ['soquete' => 'E27', 'acabamentos' => $P8, 'observacao' => $NAL]),
+        'arandela-eclipse' => $ar('Arandela Eclipse', 'aparente', 26, 'ARS-933', [], 'eclipse', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+    ];
     return $produtos;
 }
 
@@ -504,7 +551,8 @@ function produto_resumo(array $p): string
         }
         $s = $p['versoes'][0]['specs'];
         unset($s['Tipo'], $s['Acabamentos'], $s['Soquete']);
-        return implode(' · ', array_slice(array_map(static fn($k, $v) => $k . ' ' . $v, array_keys($s), $s), 0, 2)) . ' · ' . $p['soquete'];
+        $partes = array_slice(array_map(static fn($k, $v) => $k . ' ' . $v, array_keys($s), $s), 0, 2);
+        return implode(' · ', array_merge($partes, ['Soquete ' . $p['soquete']]));
     }
     return $p['largura'] . ' × ' . $p['altura'] . ' · 1, 2 e 3 m';
 }

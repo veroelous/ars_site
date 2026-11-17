@@ -26,6 +26,7 @@ $contagem = match ($slugCat) {
 $ctaImg = match ($slugCat) {
     'spots'     => '/assets/img/produtos/spots/tela-4.webp',
     'pendentes' => '/assets/img/produtos/pendentes/copo-6.webp',
+    'arandelas' => '/assets/img/produtos/arandelas/cora.webp',
     default     => '/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp',
 };
 
