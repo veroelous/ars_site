@@ -62,6 +62,7 @@ const ARS_PAGES = [
     ['href' => '/produtos/embutidos/', 'label' => 'Embutidos', 'priority' => '0.9'],
     ['href' => '/produtos/modulos-de-sobrepor/', 'label' => 'Módulos de sobrepor', 'priority' => '0.9'],
     ['href' => '/produtos/jardim/', 'label' => 'Jardim', 'priority' => '0.9'],
+    ['href' => '/produtos/vidros/', 'label' => 'Vidros', 'priority' => '0.9'],
     ['href' => '/seja-revendedor/', 'label' => 'Seja revendedor', 'priority' => '0.9'],
     ['href' => '/onde-comprar/', 'label' => 'Onde comprar', 'priority' => '0.8'],
     ['href' => '/contato-e-orcamento/', 'label' => 'Contato e orçamento', 'priority' => '0.8'],

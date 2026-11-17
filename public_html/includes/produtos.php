@@ -84,7 +84,14 @@ const ARS_CATEGORIAS = [
         'pagina'    => 61,
         'online'    => true,
     ],
-    'vidros'          => ['nome' => 'Vidros', 'resumo' => 'Peças com vidro decorado em diversos padrões.', 'imagem' => 'vidros.webp', 'pagina' => 66, 'online' => false],
+    'vidros' => [
+        'nome'      => 'Vidros',
+        'resumo'    => 'Peças com vidro decorado em diversos padrões.',
+        'descricao' => 'Arandelas e plafons de vidro decorado, em padrões como Bamboo, Risk, Cadence e Orion, para soquete E27.',
+        'imagem'    => 'vidros.webp',
+        'pagina'    => 66,
+        'online'    => true,
+    ],
 ];
 
 /** Grupos de produtos dentro de cada categoria, na ordem em que aparecem na página da categoria. */
@@ -117,6 +124,10 @@ const ARS_TIPOS = [
         'garden'      => ['nome' => 'Espetos e embutidos de solo', 'uso' => 'Linha Garden: IP65, com anti-ofuscante, para lâmpadas MR11 e MR16.'],
         'balizadores' => ['nome' => 'Balizadores', 'uso' => 'Peças em alumínio para jardins, caminhos e áreas externas.'],
         'parede'      => ['nome' => 'Arandelas e plafonier', 'uso' => 'Peças de parede e de teto.'],
+    ],
+    'vidros' => [
+        'arandelas' => ['nome' => 'Arandelas de vidro', 'uso' => 'Vidro curvo decorado sobre base de parede, 100 × 180 mm, soquete E27.'],
+        'plafons'   => ['nome' => 'Plafons de vidro', 'uso' => 'Redondos ou quadrados, em dois tamanhos: 1 ou 2 lâmpadas E27.'],
     ],
     'pendentes' => [
         'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
@@ -677,6 +688,35 @@ function ars_produtos(): array
         'plafonier' => linha('Plafonier', 'parede', 65, $jd + [
             'material' => 'Alumínio', 'soquete' => 'E27', 'acabamentos' => ['BR', 'CB', 'PT', 'AL'],
         ], [['Plafonier', 'Plafonier', 'ARS-20', [], 'plafonier']]),
+    ];
+
+    // Vidros: catálogo p. 66 (arandelas) e 67 (plafons redondos e quadrados).
+    $vd = ['categoria' => 'vidros', 'material' => 'Vidro', 'soquete' => 'E27', 'acabamentos' => []];
+    $arv = static fn(string $nome, string $codigo, string $img)
+        => linha('Arandela de vidro ' . $nome, 'arandelas', 66, $vd, [['Arandela', $nome, $codigo, ['Dimensões' => '100 × 180 mm'], $img]]);
+    $plv = static function (string $nome, string $forma, array $codigos, string $img) use ($vd): array {
+        $redondo = $forma === 'redondo';
+        $versoes = [];
+        foreach ([[250, '1'], [300, '2']] as $i => [$mm, $lamp]) {
+            $medida = $redondo ? ['Diâmetro' => $mm . ' mm'] : ['Dimensões' => $mm . ' × ' . $mm . ' mm'];
+            $versoes[] = ['Plafon', $nome . ' ' . $mm, $codigos[$i], $medida + ['Lâmpadas' => $lamp], $img];
+        }
+        return linha('Plafon de vidro ' . $nome, 'plafons', 67, $vd + [
+            'descricao' => 'Plafon ' . ($redondo ? 'redondo' : 'quadrado') . ' de vidro decorado, em dois tamanhos: ' . ($redondo ? 'Ø 250 mm' : '250 × 250 mm') . ' para 1 lâmpada e ' . ($redondo ? 'Ø 300 mm' : '300 × 300 mm') . ' para 2 lâmpadas E27.',
+        ], $versoes);
+    };
+    $produtos += [
+        'arandela-de-vidro-bamboo'         => $arv('Bamboo', '687-BA', 'arandela-bamboo'),
+        'arandela-de-vidro-rio-de-janeiro' => $arv('Rio de Janeiro', '619-RJ', 'arandela-rio-de-janeiro'),
+        'arandela-de-vidro-cadence'        => $arv('Cadence', '688-CA', 'arandela-cadence'),
+        'arandela-de-vidro-risk'           => $arv('Risk', '616-RIS', 'arandela-risk'),
+        'arandela-de-vidro-fosca'          => $arv('Fosca', '5004', 'arandela-fosca'),
+        'arandela-de-vidro-xadrez'         => $arv('Xadrez', '615-XAD', 'arandela-xadrez'),
+        'plafon-de-vidro-risk-redondo'     => $plv('Risk Redondo', 'redondo', ['901P-RED-RIS', '901-RED-RIS'], 'plafon-risk-redondo'),
+        'plafon-de-vidro-cadence'          => $plv('Cadence', 'redondo', ['901P-RED-CA', '901-RED-CA'], 'plafon-cadence'),
+        'plafon-de-vidro-orion'            => $plv('Orion', 'quadrado', ['946P-OR-PTBR', '946-OR-PTBR'], 'plafon-orion'),
+        'plafon-de-vidro-bamboo'           => $plv('Bamboo', 'quadrado', ['945P-BA-BR', '945-BA-BR'], 'plafon-bamboo'),
+        'plafon-de-vidro-risk-quadrado'    => $plv('Risk Quadrado', 'quadrado', ['900P-QUAD-RIS', '900-QUAD-RIS'], 'plafon-risk-quadrado'),
     ];
     return $produtos;
 }

@@ -20,7 +20,7 @@ $temVersoes = $slugCat !== 'perfis-de-led';
 $versoes = $temVersoes ? array_sum(array_map(static fn($g) => array_sum(array_map(static fn($p) => count($p['versoes']), $g)), $grupos)) : 0;
 $contagem = match ($slugCat) {
     'spots'     => $total . ' famílias · ' . $versoes . ' versões',
-    'pendentes', 'embutidos', 'modulos-de-sobrepor', 'jardim' => $versoes . ' modelos',
+    'pendentes', 'embutidos', 'modulos-de-sobrepor', 'jardim', 'vidros' => $versoes . ' modelos',
     default     => $total . ' modelos',
 };
 $ctaImg = match ($slugCat) {
@@ -30,6 +30,7 @@ $ctaImg = match ($slugCat) {
     'embutidos' => '/assets/img/produtos/embutidos/abs-duplo-ar70-par20.webp',
     'modulos-de-sobrepor' => '/assets/img/produtos/modulos-de-sobrepor/apex-70-4.webp',
     'jardim'    => '/assets/img/produtos/jardim/garden-16-espeto.webp',
+    'vidros'    => '/assets/img/produtos/vidros/plafon-cadence.webp',
     default     => '/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp',
 };
 
