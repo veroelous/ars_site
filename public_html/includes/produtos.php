@@ -9,7 +9,11 @@
 declare(strict_types=1);
 
 /** Acabamentos usados no catálogo (sigla → nome). */
-const ARS_ACABAMENTOS = ['BR' => 'Branco', 'CB' => 'Cobre', 'PT' => 'Preto', 'AL' => 'Alumínio'];
+const ARS_ACABAMENTOS = [
+    'BR' => 'Branco', 'CB' => 'Cobre', 'PT' => 'Preto', 'AL' => 'Alumínio',
+    // Paleta das linhas Essenza, Nimbo, Kube, Orbe e Vernazza (legenda impressa no catálogo).
+    'BZ' => 'Bronze AVL', 'VD' => 'Verde AVL', 'PD' => 'Pedra', 'DR' => 'Dourado', 'CP' => 'Champagne', 'OW' => 'Off White',
+];
 
 /** Acabamentos dos perfis de LED (os códigos seguem esta ordem). */
 const ARS_ACABAMENTOS_PERFIL = ['BR' => 'Branco', 'PT' => 'Preto', 'AL' => 'Alumínio'];
@@ -29,7 +33,14 @@ const ARS_CATEGORIAS = [
     ],
     'colecao-bonalux' => ['nome' => 'Coleção Bonalux', 'resumo' => 'Linhas decorativas da coleção Bonalux, do Grupo ARS.', 'imagem' => 'colecao-bonalux.webp', 'pagina' => 13, 'online' => false],
     'arandelas'       => ['nome' => 'Arandelas', 'resumo' => 'Arandelas para parede em diversos modelos e acabamentos.', 'imagem' => 'arandelas.webp', 'pagina' => 22, 'online' => false],
-    'pendentes'       => ['nome' => 'Pendentes', 'resumo' => 'Pendentes em diversos modelos, tamanhos e acabamentos.', 'imagem' => 'pendentes.webp', 'pagina' => 27, 'online' => false],
+    'pendentes' => [
+        'nome'      => 'Pendentes',
+        'resumo'    => 'Pendentes, trilhos e arandelas em linhas com desenho próprio.',
+        'descricao' => 'Pendentes, trilhos e arandelas organizados em linhas com desenho próprio, para soquetes E27, G9 e GU10, em diversos acabamentos.',
+        'imagem'    => 'pendentes.webp',
+        'pagina'    => 27,
+        'online'    => true,
+    ],
     'embutidos'       => ['nome' => 'Embutidos', 'resumo' => 'Luminárias de embutir simples e múltiplas.', 'imagem' => 'embutidos.webp', 'pagina' => 45, 'online' => false],
     'modulos-de-sobrepor' => ['nome' => 'Módulos de sobrepor', 'resumo' => 'Módulos e cilindros de sobrepor.', 'imagem' => 'modulos-de-sobrepor.webp', 'pagina' => 47, 'online' => false],
     'spots' => [
@@ -56,6 +67,10 @@ const ARS_TIPOS = [
         'e27'   => ['nome' => 'Spots para soquete E27', 'uso' => 'Spots de sobrepor para lâmpadas com base E27, em base redonda ou trilho.'],
         'gu10'  => ['nome' => 'Spots para soquete GU10', 'uso' => 'Para lâmpadas dicroicas e LED GU10.'],
         'par20' => ['nome' => 'Spots para E27 / PAR20', 'uso' => 'Corpo maior, para lâmpadas PAR20 com base E27.'],
+    ],
+    'pendentes' => [
+        'linhas'  => ['nome' => 'Linhas e coleções', 'uso' => 'Famílias de peças com o mesmo desenho: pendentes, trilhos e arandelas.'],
+        'avulsos' => ['nome' => 'Pendentes', 'uso' => 'Modelos individuais da coleção ARS.'],
     ],
 ];
 
@@ -102,10 +117,23 @@ function spot(string $familia, string $grupo, int $pagina, string $soquete, arra
 {
     $lista = [];
     foreach ($versoes as [$nome, $codigo, $trilho, $focos, $imagem]) {
-        $lista[] = ['nome' => $nome, 'codigo' => $codigo, 'trilho' => $trilho, 'focos' => $focos, 'imagem' => $imagem];
+        $lista[] = [
+            'nome' => $nome, 'codigo' => $codigo, 'trilho' => $trilho, 'focos' => $focos, 'imagem' => $imagem,
+            'specs' => ['Focos' => (string) $focos, 'Base' => $trilho ? 'Trilho ' . $trilho : 'Redonda'],
+        ];
     }
     $focos = array_column($lista, 'focos');
+    $faixa = min($focos) === max($focos) ? (string) min($focos) : min($focos) . ' a ' . max($focos);
+    $trilhos = array_values(array_unique(array_filter(array_column($lista, 'trilho'))));
+    $ficha = ['Tipo' => 'Spot de sobrepor', 'Soquete' => $soquete, 'Focos' => $faixa];
+    if ($trilhos) {
+        $ficha['Trilhos'] = implode(', ', $trilhos);
+    }
+    if (isset($extra['observacao'])) {
+        $ficha['Lâmpada'] = $extra['observacao'];
+    }
     return [
+        'ficha'       => $ficha,
         'categoria'   => 'spots',
         'tipo'        => $grupo,
         'nome'        => 'Spot ' . $familia,
@@ -117,6 +145,55 @@ function spot(string $familia, string $grupo, int $pagina, string $soquete, arra
         'imagem'      => $lista[0]['imagem'],
         'pagina'      => $pagina,
     ] + $extra;
+}
+
+/**
+ * Monta uma linha/modelo de pendentes. $base: soquete, material, tensao, uso, acabamentos, descricao, cabos, observacao.
+ * Cada item: [tipo, nome, código, specs (rótulo => valor), imagem, opcional: ['acabamentos' => [...], 'soquete' => '...']].
+ */
+function linha(string $nome, string $grupo, int $pagina, array $base, array $itens): array
+{
+    $versoes = [];
+    $todos = [];
+    foreach ($itens as $item) {
+        [$tipo, $vnome, $codigo, $specs, $imagem] = $item;
+        $over = $item[5] ?? [];
+        $acab = $over['acabamentos'] ?? $base['acabamentos'];
+        $todos = array_merge($todos, $acab);
+        $specs = ['Tipo' => $tipo] + $specs;
+        if (isset($over['soquete'])) {
+            $specs['Soquete'] = $over['soquete'];
+        }
+        if (isset($over['acabamentos'])) {
+            $specs['Acabamentos'] = implode(', ', array_map(static fn($a) => ARS_ACABAMENTOS[$a], $acab));
+        }
+        $versoes[] = ['nome' => $vnome, 'codigo' => $codigo, 'imagem' => $imagem, 'specs' => $specs, 'tipo' => $tipo];
+    }
+    $ficha = ['Soquete' => $base['soquete']];
+    foreach (['material' => 'Material', 'tensao' => 'Tensão', 'uso' => 'Uso'] as $k => $rotulo) {
+        if (!empty($base[$k])) {
+            $ficha[$rotulo] = $base[$k];
+        }
+    }
+    if (!empty($base['cabos'])) {
+        $ficha['Cabo'] = 'Cabos em tecido, em várias cores';
+    }
+    if (!empty($base['observacao'])) {
+        $ficha['Lâmpada'] = $base['observacao'];
+    }
+    return [
+        'categoria'   => 'pendentes',
+        'tipo'        => $grupo,
+        'nome'        => $nome,
+        'descricao'   => $base['descricao'] ?? null,
+        'soquete'     => $base['soquete'],
+        'acabamentos' => array_values(array_unique($todos)),
+        'versoes'     => $versoes,
+        'ficha'       => $ficha,
+        'imagem'      => $versoes[0]['imagem'],
+        'pagina'      => $pagina,
+        'observacao'  => $base['observacao'] ?? null,
+    ];
 }
 
 /** Produtos por slug (o slug é a URL: /produtos/<categoria>/<slug>/). */
@@ -233,6 +310,153 @@ function ars_produtos(): array
             ['Plastic 209.2', 'ARS-209/2', null, 2, 'plastic-209-2'],
             ['Plastic 209.3', 'ARS-209/3', '500 mm', 3, 'plastic-209-3'],
         ]),
+
+        // ---------- Pendentes (catálogo, páginas 27 a 44) ----------
+    ];
+    $P3 = ['BR', 'CB', 'PT'];
+    $P8 = ['BZ', 'VD', 'PT', 'PD', 'DR', 'CP', 'BR', 'OW'];
+    $tec = ['material' => 'Alumínio', 'tensao' => '127 V ~ 220 V', 'uso' => 'Interno'];
+    $NAL = 'Não acompanha lâmpada.';
+    $D = static fn(?int $a = null, ?int $d = null, ?int $l = null, ?int $t = null): array => array_filter([
+        'Altura' => $a ? $a . ' mm' : null, 'Diâmetro' => $d ? $d . ' mm' : null,
+        'Largura' => $l ? $l . ' mm' : null, 'Trilho' => $t ? $t . ' mm' : null,
+    ]);
+    $avulso = static fn(string $nome, int $pag, string $codigo, array $specs, string $img, array $base, string $tipo = 'Pendente')
+        => linha($nome, 'avulsos', $pag, $base, [[$tipo, $nome, $codigo, $specs, $img]]);
+
+    $produtos += [
+        'linha-essenza' => linha('Linha Essenza', 'linhas', 27, $tec + [
+            'descricao' => 'Com formas circulares e design contemporâneo, combina volumes suaves e iluminação funcional, criando peças versáteis e elegantes.',
+            'soquete' => 'G9', 'acabamentos' => $P8,
+        ], [
+            ['Pendente', 'Pendente Nero', 'ARS-NR380', $D(195, 380), 'nero'],
+            ['Arandela', 'Arandela Luna', 'ARS-LN300', $D(null, 300), 'luna'],
+            ['Arandela', 'Arandela Ágape', 'ARS-AGAPE33', $D(null, 280), 'agape'],
+        ]),
+        'linha-melbourne' => linha('Linha Melbourne', 'linhas', 28, $tec + [
+            'descricao' => 'Com inspiração industrial e traços robustos, combina formas clássicas com detalhes metálicos marcantes. Uma coleção de personalidade urbana.',
+            'soquete' => 'E27', 'acabamentos' => $P3,
+        ], [
+            ['Pendente', 'Pendente Melbourne', 'ARS-188', $D(150, 280), 'melbourne'],
+            ['Trilho', 'Melbourne B2', 'ARS-TR188', $D(150, 280, null, 500), 'melbourne-b2'],
+            ['Arandela', 'Arandela Melbourne', 'ARS-AR188', $D(120, 230), 'melbourne-arandela'],
+        ]),
+        'linha-impiricus' => linha('Linha Impiricus', 'linhas', 29, $tec + [
+            'descricao' => 'Com inspiração industrial e presença marcante, combina formas robustas com detalhes metálicos que ressaltam sua personalidade.',
+            'soquete' => 'E27', 'acabamentos' => $P3,
+        ], [
+            ['Pendente', 'Pendente Impiricus', 'ARS-187', $D(250, 150), 'impiricus'],
+            ['Trilho', 'Impiricus B2', 'ARS-TR187', $D(250, 150, null, 400), 'impiricus-b2'],
+            ['Arandela', 'Arandela Impiricus', 'ARS-AR187', $D(250, 150), 'impiricus-arandela'],
+        ]),
+        'linha-sino' => linha('Linha Sino', 'linhas', 30, $tec + [
+            'descricao' => 'Com inspiração industrial e traços robustos, combina formas clássicas com detalhes metálicos marcantes. Uma coleção de personalidade urbana.',
+            'soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL,
+        ], [
+            ['Pendente', 'Pendente Sino', 'ARS-180', $D(200, 260), 'sino'],
+            ['Trilho', 'Sino B2', 'ARS-TR181', $D(200, 260, null, 400), 'sino-b2'],
+            ['Arandela', 'Arandela Sino', 'ARS-AR180', $D(200, 260), 'sino-arandela'],
+        ]),
+        'pendente-nimbo' => $avulso('Pendente Nimbo', 31, 'ARS-NB50', $D(400, 500), 'nimbo', [
+            'descricao' => 'Com curvas suaves e lente de acrílico, proporciona uma iluminação uniforme, confortável e sem lâmpada aparente.',
+            'soquete' => 'E27', 'material' => 'Alumínio e acrílico', 'tensao' => '127 V ~ 220 V', 'uso' => 'Interno', 'acabamentos' => $P8, 'cabos' => true,
+        ]),
+        'pendente-kube' => $avulso('Pendente Kube', 31, 'ARS-PDKB20', ['Altura' => '200 mm', 'Largura' => '60 mm'], 'kube', $tec + [
+            'descricao' => 'Com linhas retas e formato vertical, traz uma presença minimalista e contemporânea.',
+            'soquete' => 'GU10 / MR16', 'acabamentos' => $P8, 'cabos' => true,
+        ]),
+        'pendente-aladim' => $avulso('Pendente Aladim', 32, 'ARS-75', $D(280, 470), 'aladim', $tec + [
+            'descricao' => 'Com formas amplas e curvas suaves, apresenta um design marcante e elegante. Sua cúpula generosa proporciona uma iluminação ampla e acolhedora.',
+            'soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL,
+        ]),
+        'pendente-monaco' => $avulso('Pendente Mônaco', 32, 'ARS-991', $D(190, 430), 'monaco', $tec + [
+            'descricao' => 'Com perfil baixo e linhas fluidas, combina leveza e sofisticação. Os detalhes criam um contraste elegante e de presença.',
+            'soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL,
+        ]),
+        'pendente-gomo'   => $avulso('Pendente Gomo', 33, 'ARS-99', $D(300, 370), 'gomo', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-zeus'   => $avulso('Pendente Zeus', 33, 'ARS-100', $D(190, 400), 'zeus', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-chines' => $avulso('Pendente Chinês', 33, 'ARS-121', $D(160, 380), 'chines', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-domo'   => $avulso('Pendente Domo', 33, 'ARS-120', $D(320, 310), 'domo', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-kim' => linha('Pendente Kim', 'avulsos', 34, ['soquete' => 'E27', 'acabamentos' => $P3], [
+            ['Pendente', 'Kim P', 'ARS-80', $D(200, 215), 'kim-p'],
+            ['Pendente', 'Kim G', 'ARS-97', $D(200, 400), 'kim-g'],
+        ]),
+        'pendente-meia-lua' => $avulso('Pendente Meia Lua', 34, 'ARS-73', $D(210, 330), 'meia-lua', ['soquete' => 'E27', 'acabamentos' => $P3]),
+        'pendente-mini-lua' => $avulso('Pendente Mini Lua', 34, 'ARS-197', $D(130, 210), 'mini-lua', ['soquete' => 'E27', 'acabamentos' => $P3]),
+        'pendente-moon'     => $avulso('Pendente Moon', 34, 'ARS-1057', $D(210, 320), 'moon', ['soquete' => 'E27', 'acabamentos' => $P3]),
+        'linha-italia' => linha('Linha Itália', 'linhas', 35, $tec + [
+            'descricao' => 'Com formas cônicas e proporções marcantes, a Linha Itália explora diferentes silhuetas em um design elegante e atemporal.',
+            'soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL,
+        ], [
+            ['Pendente', 'Pendente Roma', 'ARS-133', $D(345, 220), 'roma'],
+            ['Pendente', 'Pendente Veneza', 'ARS-131', $D(150, 175), 'veneza'],
+            ['Pendente', 'Pendente Milão', 'ARS-132', $D(310, 180), 'milao'],
+        ]),
+        'linha-vernazza' => linha('Linha Vernazza', 'linhas', 36, $tec + [
+            'descricao' => 'Design escandinavo com acabamento interno metalizado que valoriza a luz e o ambiente.',
+            'soquete' => 'E27', 'acabamentos' => $P8,
+        ], [
+            ['Pendente', 'Arcanas 106', 'ARS-106', $D(450, 400), 'arcanas-106'],
+            ['Pendente', 'Arcanas 107', 'ARS-107', $D(250, 300), 'arcanas-107'],
+            ['Pendente', 'Delfos', 'ARS-103', $D(250, 120), 'delfos', ['acabamentos' => $P3]],
+            ['Pendente', 'Halandri', 'ARS-105', $D(250, 250), 'halandri'],
+        ]),
+        'pendente-alfa' => linha('Pendente Alfa', 'avulsos', 37, ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL], [
+            ['Pendente', 'Alfa G', 'ARS-210', $D(230, 370), 'alfa-g'],
+            ['Pendente', 'Alfa P', 'ARS-110', $D(190, 240), 'alfa-p'],
+        ]),
+        'pendente-gotao'     => $avulso('Pendente Gotão', 37, 'ARS-88', $D(245, 230), 'gotao', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-bala'      => $avulso('Pendente Bala', 37, 'ARS-61', $D(200, 150), 'bala', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-mega-mini' => $avulso('Pendente Mega Mini', 37, 'ARS-101', $D(240, 280), 'mega-mini', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'colecao-paris' => linha('Coleção Paris', 'linhas', 38, ['soquete' => 'E27', 'acabamentos' => $P3], [
+            ['Pendente', 'Cone Paris P', 'ARS-90', $D(250, 150), 'cone-paris-p'],
+            ['Pendente', 'Taça Paris P', 'ARS-91', $D(280, 120), 'taca-paris-p'],
+            ['Pendente', 'Mog Paris P', 'ARS-92', $D(220, 200), 'mog-paris-p'],
+            ['Pendente', 'Cone Paris G', 'ARS-85', $D(360, 180), 'cone-paris-g'],
+            ['Pendente', 'Taça Paris G', 'ARS-86', $D(300, 160), 'taca-paris-g'],
+            ['Pendente', 'Mog Paris G', 'ARS-87', $D(240, 280), 'mog-paris-g'],
+        ]),
+        'pendente-orbe' => $avulso('Pendente Orbe', 39, 'ARS-OB60', $D(160, 60), 'orbe', $tec + [
+            'descricao' => 'Com formas geométricas que se entrelaçam, traz personalidade e sofisticação ao ambiente.',
+            'soquete' => 'E27 ou GU10 / MR11', 'acabamentos' => $P8, 'cabos' => true, 'observacao' => $NAL,
+        ]),
+        'pendente-coquinho' => $avulso('Pendente Coquinho', 39, 'ARS-62', $D(110, 100), 'coquinho', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-lucci'    => $avulso('Pendente Lucci', 39, 'ARS-123', $D(270, 165), 'lucci', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'pendente-copo'     => $avulso('Pendente Copo', 39, 'ARS-83', $D(50, 38), 'copo', ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL]),
+        'colecao-tubo' => linha('Coleção Tubo', 'linhas', 40, ['soquete' => 'GU10 / MR11', 'acabamentos' => ['BR', 'CB', 'PT', 'DR', 'CP'], 'observacao' => $NAL], [
+            ['Pendente', 'Tubo 100', 'ARS-711', $D(100, 35), 'tubo-curto'],
+            ['Pendente', 'Tubo 200', 'ARS-712', $D(200, 35), 'tubo-curto'],
+            ['Pendente', 'Tubo 300', 'ARS-713', $D(300, 35), 'tubo-curto'],
+            ['Pendente', 'Tubo 400', 'ARS-714', $D(400, 35), 'tubo-longo'],
+            ['Pendente', 'Tubo 500', 'ARS-715', $D(500, 35), 'tubo-longo'],
+        ]),
+        'linha-fenix' => linha('Linha Fênix', 'linhas', 41, $tec + [
+            'descricao' => 'Com estruturas geométricas que se sobrepõem, seus volumes vazados valorizam a luz e conferem personalidade e dinamismo.',
+            'soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL,
+        ], [
+            ['Pendente', 'Fênix G', 'ARS-831', $D(150, null, 150), 'fenix-g'],
+            ['Pendente', 'Fênix P', 'ARS-841', $D(200, null, 200), 'fenix-p'],
+            ['Pendente', 'Fênix Duo', 'ARS-838', $D(200, null, 400), 'fenix-duo'],
+        ]),
+        'plafon-copo-6' => $avulso('Plafon Copo 6', 42, 'ARS-673', $D(255, null, 490), 'copo-6', $tec + [
+            'descricao' => 'Com braços distribuídos em diferentes direções, cria uma composição dinâmica e equilibrada.',
+            'soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL,
+        ], 'Plafon'),
+        'pendente-cubo' => linha('Pendente Cubo', 'avulsos', 42, ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL], [
+            ['Pendente', 'Cubo', 'ARS-13', $D(150, null, 150), 'cubo'],
+            ['Pendente', 'Cubo 3D', 'ARS-14', $D(240, null, 440), 'cubo-3d'],
+        ]),
+        'colecao-aramados' => linha('Coleção Aramados', 'linhas', 43, ['soquete' => 'E27', 'acabamentos' => $P3, 'observacao' => $NAL], [
+            ['Pendente', 'Status', 'ARS-191', ['Dimensões' => '420 × 150 mm'], 'status'],
+            ['Pendente', 'Wind', 'ARS-204', ['Dimensões' => '420 × 160 mm'], 'wind'],
+            ['Pendente', 'Spider', 'ARS-190', ['Dimensões' => '200 × 250 mm'], 'spider'],
+            ['Pendente', 'Barril', 'ARS-193', ['Dimensões' => '170 × 320 mm'], 'barril'],
+            ['Pendente', 'Atrani', 'ARS-201', ['Dimensões' => '430 × 340 mm'], 'atrani'],
+            ['Pendente', 'Estrela', 'ARS-125', ['Dimensões' => '495 × 150 mm'], 'estrela'],
+            ['Pendente', 'Kim P (aramado)', 'ARS-153', ['Dimensões' => '235 × 160 mm'], 'kim-p-aramado'],
+            ['Pendente', 'Diamante P', 'ARS-155', ['Dimensões' => '160 × 180 mm'], 'diamante-p'],
+            ['Pendente', 'Diamante G', 'ARS-156', ['Dimensões' => '210 × 260 mm'], 'diamante-g'],
+        ]),
     ];
     return $produtos;
 }
@@ -272,6 +496,15 @@ function produto_resumo(array $p): string
 {
     if ($p['categoria'] === 'spots') {
         return 'Soquete ' . $p['soquete'] . ' · ' . $p['focos'] . ($p['focos'] === '1' ? ' foco' : ' focos');
+    }
+    if (isset($p['versoes'])) {
+        $n = count($p['versoes']);
+        if ($n > 1) {
+            return $n . ' modelos · ' . $p['soquete'];
+        }
+        $s = $p['versoes'][0]['specs'];
+        unset($s['Tipo'], $s['Acabamentos'], $s['Soquete']);
+        return implode(' · ', array_slice(array_map(static fn($k, $v) => $k . ' ' . $v, array_keys($s), $s), 0, 2)) . ' · ' . $p['soquete'];
     }
     return $p['largura'] . ' × ' . $p['altura'] . ' · 1, 2 e 3 m';
 }

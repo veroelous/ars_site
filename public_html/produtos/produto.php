@@ -15,27 +15,41 @@ if (!$p) {
 }
 
 $isSpot = $p['categoria'] === 'spots';
+$isFamilia = isset($p['versoes']);
 $url = produto_url($slug, $p);
 $img = produto_imagem($slug, $p);
 $tipoInfo = ARS_TIPOS[$slugCat][$p['tipo']];
 
-if ($isSpot) {
+if ($isFamilia) {
     $acab = array_map(static fn($s) => ARS_ACABAMENTOS[$s], $p['acabamentos']);
-    $temTrilho = array_filter(array_column($p['versoes'], 'trilho'));
-    $descricao = sprintf(
-        '%s ARS: spot de sobrepor com %s, soquete %s, acabamentos %s.%s Fabricante em Socorro/SP.',
-        $p['nome'],
-        $p['focos'] === '1' ? '1 foco' : $p['focos'] . ' focos',
-        $p['soquete'],
-        mb_strtolower(implode(', ', $acab)),
-        $temTrilho ? ' Versões em trilho de ' . implode(', ', array_unique($temTrilho)) . '.' : ''
-    );
+    $n = count($p['versoes']);
+    if ($isSpot) {
+        $trilhos = array_values(array_unique(array_filter(array_column($p['versoes'], 'trilho'))));
+        $descricao = sprintf(
+            '%s ARS: spot de sobrepor com %s, soquete %s, acabamentos %s.%s Fabricante em Socorro/SP.',
+            $p['nome'],
+            $p['focos'] === '1' ? '1 foco' : $p['focos'] . ' focos',
+            $p['soquete'],
+            mb_strtolower(implode(', ', $acab)),
+            $trilhos ? ' Versões em trilho de ' . implode(', ', $trilhos) . '.' : ''
+        );
+    } else {
+        $descricao = trim(sprintf(
+            '%s ARS%s. %s Soquete %s, %d %s de acabamento. Fabricante em Socorro/SP.',
+            $p['nome'],
+            $n > 1 ? ' com ' . $n . ' modelos' : '',
+            $p['descricao'] ?? '',
+            $p['soquete'],
+            count($acab),
+            count($acab) > 1 ? 'opções' : 'opção'
+        ));
+    }
     $codigos = array_column($p['versoes'], 'codigo');
-    $props = [
-        ['@type' => 'PropertyValue', 'name' => 'Soquete', 'value' => $p['soquete']],
-        ['@type' => 'PropertyValue', 'name' => 'Focos', 'value' => $p['focos']],
-        ['@type' => 'PropertyValue', 'name' => 'Acabamentos', 'value' => implode(', ', $acab)],
-    ];
+    $props = [];
+    foreach ($p['ficha'] as $k => $v) {
+        $props[] = ['@type' => 'PropertyValue', 'name' => $k, 'value' => $v];
+    }
+    $props[] = ['@type' => 'PropertyValue', 'name' => 'Acabamentos', 'value' => implode(', ', $acab)];
 } else {
     $acab = array_values(ARS_ACABAMENTOS_PERFIL);
     $tabelas = $p['codigosVariantes'] ?? ['' => $p['codigos']];
@@ -100,14 +114,22 @@ breadcrumbs($page['breadcrumbs']);
         <img src="<?= e($img) ?>" alt="<?= e($p['nome']) ?> ARS Iluminação" fetchpriority="high">
       </div>
       <div class="product-hero__info">
-        <div class="kicker"><?= e($cat['nome']) ?> · <?= e($isSpot ? 'Soquete ' . $p['soquete'] : ucfirst($p['tipo'])) ?></div>
+        <div class="kicker"><?= e($cat['nome']) ?> · <?= e($isFamilia ? 'Soquete ' . $p['soquete'] : ucfirst($p['tipo'])) ?></div>
         <h1><?= e($p['nome']) ?></h1>
-        <p class="product-hero__lead"><?= e($tipoInfo['uso']) ?></p>
+        <p class="product-hero__lead"><?= e($p['descricao'] ?? $tipoInfo['uso']) ?></p>
         <ul class="spec-chips">
           <?php if ($isSpot): ?>
             <li><strong><?= e($p['soquete']) ?></strong> soquete</li>
             <li><strong><?= e($p['focos']) ?></strong> <?= $p['focos'] === '1' ? 'foco' : 'focos' ?></li>
             <li><strong><?= count($p['versoes']) ?></strong> versões</li>
+          <?php elseif ($isFamilia): ?>
+            <li><strong><?= e($p['soquete']) ?></strong> soquete</li>
+            <?php if ($n > 1): ?>
+              <li><strong><?= $n ?></strong> modelos</li>
+            <?php else: foreach (array_slice(array_diff_key($p['versoes'][0]['specs'], ['Tipo' => 1, 'Acabamentos' => 1, 'Soquete' => 1]), 0, 2, true) as $k => $v): ?>
+              <li><strong><?= e($v) ?></strong> <?= e(mb_strtolower($k)) ?></li>
+            <?php endforeach; endif; ?>
+            <li><strong><?= count($acab) ?></strong> <?= count($acab) > 1 ? 'acabamentos' : 'acabamento' ?></li>
           <?php else: ?>
             <li><strong><?= e($p['largura']) ?></strong> largura</li>
             <li><strong><?= e($p['altura']) ?></strong> altura</li>
@@ -129,19 +151,21 @@ breadcrumbs($page['breadcrumbs']);
     </div>
   </section>
 
-  <?php if ($isSpot): ?>
+  <?php if ($isFamilia): ?>
   <section class="section section--white">
     <div class="wrap">
-      <h2>Versões</h2>
+      <h2><?= $isSpot ? 'Versões' : ($n > 1 ? 'Modelos da linha' : 'Especificações') ?></h2>
       <div class="variant-grid">
         <?php foreach ($p['versoes'] as $v): ?>
           <article class="variant-card">
-            <div class="product-card__img"><img src="/assets/img/produtos/spots/<?= e($v['imagem']) ?>.webp" alt="<?= e($v['nome']) ?> ARS" loading="lazy" decoding="async"></div>
+            <div class="product-card__img"><img src="/assets/img/produtos/<?= e($p['categoria']) ?>/<?= e($v['imagem']) ?>.webp" alt="<?= e($v['nome']) ?> ARS" loading="lazy" decoding="async"></div>
+            <?php if (isset($v['tipo'])): ?><div class="variant-type"><?= e($v['tipo']) ?></div><?php endif; ?>
             <h3><?= e($v['nome']) ?></h3>
             <dl class="variant-specs">
               <div><dt>Código</dt><dd><?= e($v['codigo']) ?></dd></div>
-              <div><dt>Focos</dt><dd><?= (int) $v['focos'] ?></dd></div>
-              <div><dt>Base</dt><dd><?= $v['trilho'] ? 'Trilho ' . e($v['trilho']) : 'Redonda' ?></dd></div>
+              <?php foreach (array_diff_key($v['specs'], ['Tipo' => 1]) as $k => $val): ?>
+                <div><dt><?= e($k) ?></dt><dd><?= e($val) ?></dd></div>
+              <?php endforeach; ?>
             </dl>
           </article>
         <?php endforeach; ?>
@@ -152,11 +176,9 @@ breadcrumbs($page['breadcrumbs']);
           <h2>Ficha técnica</h2>
           <table class="spec-table">
             <tbody>
-              <tr><th scope="row">Tipo</th><td>Spot de sobrepor</td></tr>
-              <tr><th scope="row">Soquete</th><td><?= e($p['soquete']) ?></td></tr>
-              <tr><th scope="row">Focos</th><td><?= e($p['focos']) ?></td></tr>
-              <?php if ($temTrilho): ?><tr><th scope="row">Trilhos</th><td><?= e(implode(', ', array_unique($temTrilho))) ?></td></tr><?php endif; ?>
-              <?php if (isset($p['observacao'])): ?><tr><th scope="row">Lâmpada</th><td><?= e($p['observacao']) ?></td></tr><?php endif; ?>
+              <?php foreach ($p['ficha'] as $k => $val): ?>
+                <tr><th scope="row"><?= e($k) ?></th><td><?= e($val) ?></td></tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
         </div>
@@ -224,14 +246,14 @@ breadcrumbs($page['breadcrumbs']);
   <?php if ($relacionados): ?>
   <section class="section">
     <div class="wrap">
-      <h2>Outros <?= e(mb_strtolower($isSpot ? 'spots' : $tipoInfo['nome'])) ?></h2>
+      <h2>Outros <?= e(mb_strtolower($isFamilia ? $cat['nome'] : $tipoInfo['nome'])) ?></h2>
       <div class="product-grid">
         <?php foreach ($relacionados as $rs => $r): ?>
           <a class="product-card" href="<?= e(produto_url($rs, $r)) ?>">
             <div class="product-card__img"><img src="<?= e(produto_imagem($rs, $r)) ?>" alt="<?= e($r['nome']) ?> ARS" loading="lazy" decoding="async"></div>
             <h3><?= e($r['nome']) ?></h3>
             <p class="product-card__spec"><?= e(produto_resumo($r)) ?></p>
-            <span class="product-card__more"><?= $isSpot ? 'Ver versões' : 'Ver ficha técnica' ?> <?= icon('arrow-up-right', 14) ?></span>
+            <span class="product-card__more"><?= $isSpot ? 'Ver versões' : ($isFamilia ? 'Ver detalhes' : 'Ver ficha técnica') ?> <?= icon('arrow-up-right', 14) ?></span>
           </a>
         <?php endforeach; ?>
       </div>

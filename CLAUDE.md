@@ -84,9 +84,11 @@ A fonte é `public_html/private/catalogo-ars-iluminacao.pdf` (68 páginas, texto
 5. **Conferência:** gere `docs/REVISAO-<LINHA>.md` com tabela ☐ por produto e pontos de atenção (códigos repetidos, siglas ambíguas). Atualize `docs/PENDENCIAS.md`.
 6. **Resultado:** o sitemap inclui os produtos automaticamente. Teste local e no ar.
 
-**Feito:** Perfis de LED (20) e Spots (14 famílias, 47 versões). **Próximos:** Pendentes, Arandelas, Embutidos, Módulos de sobrepor, Jardim, Vidros, Coleção Bonalux.
+**Feito:** Perfis de LED (20), Spots (14 famílias, 47 versões) e Pendentes (32 páginas, 67 modelos; usam `linha()`, com tipo de peça, specs por versão e paleta própria). **Próximos:** Arandelas, Embutidos, Módulos de sobrepor, Jardim, Vidros, Coleção Bonalux.
 
-**Siglas de acabamento:** BR branco, PT preto, AL alumínio, CB cobre. CB ainda está por confirmar.
+A skill reutilizável **catalogo-pdf-para-site** tem os scripts de extração de fotos, de gravação em WebP e da lista de conferência.
+
+**Siglas de acabamento:** BR branco, PT preto, AL alumínio, CB cobre (por confirmar), DR dourado, CH/CP champagne. A paleta de 8 cores (Bronze AVL, Verde AVL, Preto, Pedra, Dourado, Champagne, Branco, Off White) usa as chaves internas BZ, VD, PT, PD, DR, CP, BR e OW.
 
 ## Commits
 

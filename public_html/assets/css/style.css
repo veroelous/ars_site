@@ -2253,3 +2253,25 @@ li {
 @media (max-width: 520px) {
   .variant-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------- Pendentes: tipo da peça e paleta de cores ---------- */
+
+.variant-type {
+  margin-top: 12px;
+  color: var(--ars-orange-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.variant-type + h3 {
+  margin-top: 4px;
+}
+
+.finish--bz { background: #4b3527; border-color: #4b3527; }
+.finish--vd { background: #2f4a40; border-color: #2f4a40; }
+.finish--pd { background: #6c6c6c; border-color: #6c6c6c; }
+.finish--dr { background: #9b7429; border-color: #9b7429; }
+.finish--cp { background: #e2c56c; border-color: #cdb059; }
+.finish--ow { background: #ebe9de; }

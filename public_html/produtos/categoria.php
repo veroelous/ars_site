@@ -16,9 +16,18 @@ $grupos = ars_produtos_por_tipo($slugCat);
 $tipos = ARS_TIPOS[$slugCat] ?? [];
 $total = array_sum(array_map('count', $grupos));
 $isSpots = $slugCat === 'spots';
-$versoes = $isSpots ? array_sum(array_map(static fn($g) => array_sum(array_map(static fn($p) => count($p['versoes']), $g)), $grupos)) : 0;
-$contagem = $isSpots ? $total . ' famílias · ' . $versoes . ' versões' : $total . ' modelos';
-$ctaImg = $isSpots ? '/assets/img/produtos/spots/tela-4.webp' : '/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp';
+$temVersoes = $slugCat !== 'perfis-de-led';
+$versoes = $temVersoes ? array_sum(array_map(static fn($g) => array_sum(array_map(static fn($p) => count($p['versoes']), $g)), $grupos)) : 0;
+$contagem = match ($slugCat) {
+    'spots'     => $total . ' famílias · ' . $versoes . ' versões',
+    'pendentes' => $versoes . ' modelos',
+    default     => $total . ' modelos',
+};
+$ctaImg = match ($slugCat) {
+    'spots'     => '/assets/img/produtos/spots/tela-4.webp',
+    'pendentes' => '/assets/img/produtos/pendentes/copo-6.webp',
+    default     => '/assets/img/produtos/perfis-de-led/perfil-de-sobrepor-75x50.webp',
+};
 
 $page = [
     'title'       => $cat['nome'],
@@ -80,7 +89,7 @@ breadcrumbs($page['breadcrumbs']);
                 <?php if (!empty($p['destaques'])): ?>
                   <p class="product-card__tag"><?= e($p['destaques'][0]) ?></p>
                 <?php endif; ?>
-                <span class="product-card__more"><?= $isSpots ? 'Ver versões' : 'Ver ficha técnica' ?> <?= icon('arrow-up-right', 14) ?></span>
+                <span class="product-card__more"><?= $isSpots ? 'Ver versões' : ($temVersoes ? 'Ver detalhes' : 'Ver ficha técnica') ?> <?= icon('arrow-up-right', 14) ?></span>
               </a>
             <?php endforeach; ?>
           </div>
