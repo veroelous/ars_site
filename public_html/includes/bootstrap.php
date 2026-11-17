@@ -8,6 +8,15 @@ declare(strict_types=1);
 require_once __DIR__ . '/site.php';
 
 /**
+ * Páginas geradas pelo PHP não devem ficar presas no cache do servidor (nginx da hospedagem):
+ * assim cada publicação aparece na hora. Imagens, CSS e JS continuam em cache (ver .htaccess).
+ */
+if (PHP_SAPI !== 'cli' && !headers_sent()) {
+    header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+    header('X-Accel-Expires: 0');
+}
+
+/**
  * Pasta privada (contatos, catálogo, cache, configuração).
  * Preferência: fora do public_html (../ars_private). Se não existir,
  * usa public_html/private, bloqueada pelo .htaccess.
