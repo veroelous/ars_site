@@ -51,7 +51,6 @@ site_header('solid', '/produtos/');
           </a>
         <?php endforeach; ?>
       </div>
-      <p class="note">As demais linhas ganham páginas próprias em breve. Enquanto isso, todos os modelos estão no catálogo completo.</p>
     </div>
   </section>
 

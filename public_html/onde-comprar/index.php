@@ -29,15 +29,15 @@ site_header('solid', '/onde-comprar/');
       'Revendas ARS',
       'Onde comprar <span>produtos ARS.</span>',
       'Encontre uma loja parceira perto de você ou fale com a ARS para receber a indicação da revenda mais próxima.',
-      ['title' => '[FOTO DE LOJA PARCEIRA OU PRODUTO APLICADO]', 'hint' => 'Inserir mídia oficial']
+      ['image' => '/assets/img/produtos/colecao-bonalux/pendente-siena.webp', 'alt' => 'Pendente Siena, coleção Bonalux', 'width' => 613, 'height' => 386]
   ); ?>
 
+  <?php if ($byUf): ?>
   <section class="section section--white">
     <div class="wrap reveal">
       <div class="kicker">Lojas parceiras</div>
       <h2>Revendas por estado.</h2>
 
-      <?php if ($byUf): ?>
         <div class="field resellers-filter">
           <label for="f-filtro-uf">Filtrar por estado</label>
           <select id="f-filtro-uf" class="js-uf-filter">
@@ -62,18 +62,22 @@ site_header('solid', '/onde-comprar/');
             </div>
           </div>
         <?php endforeach; ?>
-      <?php else: ?>
-        <?= pending_media('[LISTA DE REVENDAS AUTORIZADAS]', 'Enviar pela ARS: nome da loja, cidade/UF, endereço, telefone e site — com autorização para publicar', 'light', 'pending-media--doc') ?>
-      <?php endif; ?>
     </div>
   </section>
+  <?php endif; ?>
 
   <section class="section">
     <div class="wrap two-col two-col--panels reveal">
       <div class="panel">
-        <div class="kicker">Não encontrou uma loja?</div>
-        <h3>A ARS indica a revenda mais próxima</h3>
-        <p>Envie sua cidade pelo WhatsApp e a equipe comercial indica onde encontrar os produtos.</p>
+        <?php if ($byUf): ?>
+          <div class="kicker">Não encontrou uma loja?</div>
+          <h3>A ARS indica a revenda mais próxima</h3>
+          <p>Envie sua cidade pelo WhatsApp e a equipe comercial indica onde encontrar os produtos.</p>
+        <?php else: ?>
+          <div class="kicker">Lojas parceiras</div>
+          <h3>A lista de revendas está sendo organizada</h3>
+          <p>Enquanto isso, envie sua cidade pelo WhatsApp e a equipe comercial indica a loja mais próxima com produtos ARS.</p>
+        <?php endif; ?>
         <a class="btn btn--orange" href="<?= e($whatsOnde) ?>" target="_blank" rel="noreferrer" data-track="whatsapp">Perguntar pelo WhatsApp</a>
       </div>
       <div class="panel">

@@ -19,34 +19,27 @@ A Expolux terminou. No novo site:
 
 - A Hero não tem chamada, data, local nem link do evento.
 - O rodapé trocou a coluna "Expolux 2026 · 15 a 18 de setembro" pela coluna **E-mail**, como já era nas páginas internas.
-- **Falta revisar:** o texto da seção do Instagram na Home ainda diz *"…os lançamentos e a presença da ARS na Expolux."* O texto oficial foi mantido de propósito, até a ARS decidir. Arquivo: `public_html/index.php`.
+- O texto da seção do Instagram na Home terminava com *"…e a presença da ARS na Expolux."*; em 18/11/2026 passou a ser *"Acompanhe os bastidores da fábrica e os lançamentos."*
 
-## 3. Conteúdo marcado como pendente (`[ ... ]`)
+## 3. Páginas institucionais completadas sem resposta da ARS (18/11/2026)
 
-O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem com o mesmo marcador entre colchetes, destacado em laranja claro. Nada foi inventado.
+Para o site poder ir ao ar mesmo sem retorno, as caixas pendentes das páginas institucionais foram preenchidas **só com material oficial**: as duas fotos da fábrica, as fotos do catálogo, os dados do PDF (linhas, materiais, acabamentos, Grupo ARS), a bio e as legendas do Instagram e o site atual. Nenhum número, prazo, condição ou marco novo foi criado. **Tudo abaixo continua valendo a validação da redação pela ARS.**
 
 **A ARS** (`public_html/a-ars/index.php`)
-- Mídia institucional da Hero (fábrica, equipe ou processo)
-- Texto da história (fundação, evolução, marcos) e imagem histórica
-- Textos dos cards Desenvolvimento, Processo produtivo e Fabricação
-- Texto comercial para lojistas, especificadores, arquitetos e distribuidores, e a mídia de processo
-
-**Produtos** (`public_html/produtos/index.php`)
-- Mídia de abertura
-- Imagem e descrição de cada categoria: Pendentes, Perfis de LED, Spots, Spots para trilho, Arandelas, Plafons e plafoniers
-- Conteúdo da ficha técnica, do PDF por produto e de aplicações e compra
-- Texto comercial e mídia de aplicação
-- No WordPress, "Ver categoria" apontava para `/pendentes/`, `/spots/` e outras páginas que **não existem**. Aqui o botão leva à categoria correspondente em `/categorias-de-luminarias/` até essas páginas serem criadas.
-
-**Categorias** (`public_html/categorias-de-luminarias/index.php`)
-- Mídia de abertura, mais imagem e descrição de: Pendentes, Perfis de LED, Spots e spots para trilho, Arandelas, Plafons, Plafoniers
-- Ficha técnica e aplicações e compra
+- Hero e "Nossa história" com as fotos da fábrica (fachada frontal e lateral).
+- História: fundação em 2014 em Socorro/SP, fabricante com produção própria, entrega para todo o Brasil, catálogo com 9 linhas e mais de 200 modelos, Grupo ARS Iluminação (ARS, Bonalux e RSG).
+- Cards: Desenvolvimento (linhas com desenho próprio e coleção Bonalux), Processo produtivo (alumínio, ABS com tratamento UV, vidro, paleta de 8 cores) e Fabricação (produção própria em Socorro/SP, pronta entrega, envio para todo o Brasil). A "pintura eletrostática" do marcador antigo **não** foi usada, porque não aparece em nenhum material oficial.
+- Texto comercial para lojistas, distribuidores, arquitetos e instaladores, com foto de produto.
+- **Se a ARS enviar:** texto próprio da história, marcos, fotos da equipe e do processo.
 
 **Contato e orçamento** (`public_html/contato-e-orcamento/index.php`)
-- Mídia da Hero
-- Texto comercial (público atendido, prazo de retorno, canais)
-- Texto de conversão e mídia do bloco final
-- O formulário, que no WordPress era só um modelo ("configurar Contact Form 7"), **agora funciona**.
+- Hero e bloco final com fotos do catálogo.
+- Texto do formulário: público atendido e retorno pelo WhatsApp ou e-mail, **sem prazo de retorno** (não informado pela ARS).
+- Saiu da página pública a nota "WhatsApp e endereço conforme o site publicado — confirmar com a ARS"; a confirmação continua pendente na seção 1.
+
+**Produtos** (`public_html/produtos/index.php`): as 9 linhas têm páginas próprias e foto. Saiu o aviso "As demais linhas ganham páginas próprias em breve". A antiga página `/categorias-de-luminarias/` redireciona para `/produtos/`.
+
+**Catálogo:** o botão dizia "Catálogo ARS 2026", mas a capa do PDF mostra 2027. Passou a dizer "Baixar catálogo ARS", sem ano.
 
 ## 3b. Fase 1 (17/11/2026): itens para validar
 
@@ -54,11 +47,11 @@ O conteúdo segue o site atual: os campos ainda sem material aprovado aparecem c
 
 **Seja revendedor** (`public_html/seja-revendedor/index.php`)
 - Os três diferenciais (produção própria, pronta entrega, entrega para todo o Brasil) foram extraídos das legendas oficiais do Instagram. Falta validar a redação.
-- `[Pedido mínimo, prazos de entrega, formas de pagamento, tabela de preços e materiais de PDV]`
-- Mídia da abertura (foto da fábrica, estoque ou expedição).
+- "Como funciona" virou um passo a passo (cadastro → contato da equipe comercial → condições apresentadas no atendimento). **Quando a ARS enviar** pedido mínimo, prazos, pagamento, tabela e materiais de PDV, eles entram nesse bloco.
+- Abertura com a foto da fábrica; a lista de linhas para revenda passou a ser a das 9 linhas do catálogo.
 
 **Onde comprar** (`public_html/onde-comprar/index.php`)
-- Lista de revendas autorizadas, para preencher em `ARS_RESELLERS` (`includes/site.php`). Lojas que já exibem a marca na internet (VitaLuz, São Pedro Shopping) **não** foram incluídas sem confirmação da ARS.
+- Lista de revendas autorizadas, para preencher em `ARS_RESELLERS` (`includes/site.php`). Enquanto estiver vazia, a página mostra "A lista de revendas está sendo organizada" com o botão do WhatsApp; ao cadastrar a primeira loja, a seção "Revendas por estado" aparece sozinha. A abertura usa foto do catálogo. Lojas que já exibem a marca na internet (VitaLuz, São Pedro Shopping) **não** foram incluídas sem confirmação da ARS.
 
 **Política de privacidade** (`public_html/politica-de-privacidade/index.php`)
 - CNPJ do controlador. O cadastro público mostra 23.654.084/0001-82 com outro endereço; confirmar qual exibir.

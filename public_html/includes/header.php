@@ -39,7 +39,9 @@ function page_hero(string $eyebrow, string $titleHtml, string $lead, array $medi
         <a class="btn btn--orange" href="<?= e($cta['href']) ?>"><?= e($cta['label']) ?></a>
       <?php endif; ?>
     </div>
-    <?php if (!empty($media['image'])): ?>
+    <?php if (!empty($media['photo'])): ?>
+      <div class="page-hero__media page-hero__media--photo"><?= photo($media['photo'], $media['alt'] ?? '', true) ?></div>
+    <?php elseif (!empty($media['image'])): ?>
       <div class="page-hero__media"><img src="<?= e($media['image']) ?>" alt="<?= e($media['alt'] ?? '') ?>" width="<?= (int) ($media['width'] ?? 900) ?>" height="<?= (int) ($media['height'] ?? 600) ?>" fetchpriority="high"></div>
     <?php else: ?>
       <?= pending_media($media['title'], $media['hint'] ?? '', 'dark') ?>
@@ -47,6 +49,18 @@ function page_hero(string $eyebrow, string $titleHtml, string $lead, array $medi
   </div>
 </section>
     <?php
+}
+
+/**
+ * Foto oficial da fábrica em duas larguras (768 e 1920 px, 16:9).
+ * $nome: 'frontal' ou 'lateral' (assets/img/hero-ars-fachada-<nome>.webp).
+ */
+function photo(string $nome, string $alt, bool $prioridade = false): string
+{
+    $base = '/assets/img/hero-ars-fachada-' . $nome;
+    return '<img src="' . e($base . '.webp') . '" srcset="' . e($base . '-768.webp') . ' 768w, ' . e($base . '.webp') . ' 1920w"'
+        . ' sizes="(max-width: 900px) 100vw, 50vw" alt="' . e($alt) . '" width="1920" height="1080"'
+        . ($prioridade ? ' fetchpriority="high"' : ' loading="lazy" decoding="async"') . '>';
 }
 
 /** Trilha de navegação visível (Início › … › página atual). */

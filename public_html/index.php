@@ -100,7 +100,7 @@ $igPosts = instagram_posts(3);
       <div>
         <div class="section-tag"><?= icon('instagram') ?> Últimas publicações</div>
         <h2 class="display" id="instagram-title">Trabalho que transforma <em>propósito em realidade.</em></h2>
-        <p class="instagram__copy">Cada projeto carrega responsabilidade. Cada entrega, compromisso. Acompanhe os bastidores da fábrica, os lançamentos e a presença da ARS na Expolux.</p>
+        <p class="instagram__copy">Cada projeto carrega responsabilidade. Cada entrega, compromisso. Acompanhe os bastidores da fábrica e os lançamentos.</p>
       </div>
       <div class="instagram__brand">
         <img src="/assets/img/ars-logo-colorido.webp" alt="ARS Iluminação" width="480" height="221" loading="lazy">

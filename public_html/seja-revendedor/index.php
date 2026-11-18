@@ -32,7 +32,7 @@ site_header('solid', '/seja-revendedor/');
       'Para lojistas e distribuidores',
       'Revenda ARS: <span>fabricante nacional, pronta entrega.</span>',
       'A ARS Iluminação fabrica em Socorro/SP desde 2014 e atende lojas, distribuidores e profissionais de iluminação em todo o Brasil.',
-      ['title' => '[FOTO DA FÁBRICA, ESTOQUE OU EXPEDIÇÃO]', 'hint' => 'Inserir mídia oficial'],
+      ['photo' => 'lateral', 'alt' => 'Fábrica da ARS Iluminação em Socorro/SP'],
       ['href' => '#cadastro', 'label' => 'Quero revender']
   ); ?>
 
@@ -56,13 +56,18 @@ site_header('solid', '/seja-revendedor/');
       <div class="panel">
         <div class="kicker">Linhas para revenda</div>
         <h3>Portfólio</h3>
-        <p>Pendentes, perfis de LED, spots, spots para trilho, arandelas, plafons e plafoniers.</p>
+        <p>Perfis de LED, coleção Bonalux, arandelas, pendentes, embutidos, módulos de sobrepor, spots, jardim e vidros.</p>
         <a class="btn btn--orange" href="/produtos/">Ver produtos</a>
       </div>
       <div class="panel">
         <div class="kicker">Condições comerciais</div>
         <h3>Como funciona</h3>
-        <p><?= pending('[Pedido mínimo, prazos de entrega, formas de pagamento, tabela de preços e materiais de PDV — validar com a ARS]') ?></p>
+        <ol class="steps">
+          <li>Preencha o cadastro abaixo com os dados da sua empresa.</li>
+          <li>A equipe comercial da ARS entra em contato pelo WhatsApp ou e-mail.</li>
+          <li>Pedido mínimo, prazos, formas de pagamento e tabela de preços são apresentados nesse atendimento.</li>
+        </ol>
+        <a class="btn btn--orange" href="#cadastro">Fazer cadastro</a>
       </div>
     </div>
   </section>

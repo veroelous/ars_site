@@ -19,7 +19,7 @@ site_header('solid', '/contato-e-orcamento/');
       'Atendimento ARS',
       'Fale com a <span>ARS.</span>',
       'Conte o que você precisa para seu projeto e nossa equipe comercial retornará com as orientações adequadas.',
-      ['title' => '[IMAGEM DE ATENDIMENTO, PRODUTO OU APLICAÇÃO]', 'hint' => 'Inserir mídia oficial']
+      ['image' => '/assets/img/produtos/categorias/perfis-de-led.webp', 'alt' => 'Perfis de LED ARS Iluminação', 'width' => 900, 'height' => 602]
   ); ?>
 
   <section class="section section--white">
@@ -28,7 +28,7 @@ site_header('solid', '/contato-e-orcamento/');
       <h2>Vamos conversar sobre o seu projeto.</h2>
       <div class="contact-grid">
         <div class="panel panel--form">
-          <p><?= pending('[Texto comercial aprovado: público atendido, prazo de retorno e canais oficiais]') ?></p>
+          <p>Atendemos lojistas, distribuidores, arquitetos, especificadores e instaladores. Conte o que você precisa (modelos, quantidades ou o projeto) e a equipe comercial retorna pelo WhatsApp ou e-mail informado.</p>
 
           <div class="contact-success" role="status"<?= $sent ? '' : ' hidden' ?>>
             <h3>Mensagem enviada.</h3>
@@ -77,7 +77,6 @@ site_header('solid', '/contato-e-orcamento/');
             <li><?= icon('instagram', 18, 'text-orange') ?><a href="<?= e(ARS_SITE['instagram']['url']) ?>" target="_blank" rel="noreferrer"><?= e(ARS_SITE['instagram']['handle']) ?> <?= icon('arrow-up-right', 14) ?></a></li>
             <li><?= icon('map-pin', 18, 'text-orange') ?><a href="<?= e(ARS_SITE['address']['mapsUrl']) ?>" target="_blank" rel="noreferrer"><?= e(ARS_SITE['address']['street']) ?><small><?= e(ARS_SITE['address']['detail']) ?></small></a></li>
           </ul>
-          <p class="note">WhatsApp e endereço conforme o site publicado — confirmar com a ARS antes da troca de domínio.</p>
         </div>
       </div>
     </div>
@@ -89,10 +88,11 @@ site_header('solid', '/contato-e-orcamento/');
         <div>
           <div class="eyebrow eyebrow--light">Próximo passo</div>
           <h2>Tenha uma equipe para orientar sua especificação.</h2>
-          <p><?= pending('[Texto comercial aprovado para conversão]') ?></p>
+          <p>Envie a lista de produtos ou o projeto, com quantidades e acabamentos, e receba a orientação da equipe comercial da ARS.</p>
           <a class="btn btn--orange" href="mailto:<?= e(ARS_SITE['email']) ?>">Enviar e-mail</a>
+          <a class="btn btn--ghost" href="<?= e(whatsapp_url()) ?>" target="_blank" rel="noreferrer" data-track="whatsapp">Chamar no WhatsApp</a>
         </div>
-        <?= pending_media('[IMAGEM OU VÍDEO DE PROJETO]', '', 'dark') ?>
+        <img class="cta-panel__img" src="/assets/img/produtos/colecao-bonalux/pendente-piazza.webp" alt="" loading="lazy">
       </div>
     </div>
   </section>

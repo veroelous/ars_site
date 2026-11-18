@@ -33,7 +33,7 @@ const ARS_SITE = [
         'mapsUrl'    => 'https://www.google.com/maps/search/?api=1&query=Estrada+Joaquim+de+Souza+Siqueira%2C+2099%2C+Orat%C3%B3rio%2C+Socorro%2C+SP%2C+13960-000',
     ],
     'catalog'     => [
-        'label'    => 'Catálogo ARS 2026',
+        'label'    => 'Baixar catálogo ARS',
         'fileName' => 'catalogo-ars-iluminacao.pdf',
     ],
     'footerNote'  => 'Fabricado em Socorro/SP · Entregue para todo o Brasil',
