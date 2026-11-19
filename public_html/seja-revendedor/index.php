@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 $page = [
     'title'       => 'Seja revendedor',
+    'seo_title'   => 'Seja revendedor ARS | Luminárias e perfis de LED',
     'description' => 'Revenda os produtos da ARS Iluminação: fabricação própria em Socorro/SP, estoque para pronta entrega e envio para todo o Brasil. Cadastre sua loja ou distribuidora.',
     'path'        => '/seja-revendedor/',
 ];
+require_once dirname(__DIR__) . '/includes/bootstrap.php';
+require_once dirname(__DIR__) . '/includes/produtos.php';
 require dirname(__DIR__) . '/includes/head.php';
 require dirname(__DIR__) . '/includes/header.php';
 require_once dirname(__DIR__) . '/includes/leads.php';
@@ -56,7 +59,7 @@ site_header('solid', '/seja-revendedor/');
       <div class="panel">
         <div class="kicker">Linhas para revenda</div>
         <h3>Portfólio</h3>
-        <p>Perfis de LED, coleção Bonalux, arandelas, pendentes, embutidos, módulos de sobrepor, spots, jardim e vidros.</p>
+        <p><?= linhas_links() ?>.</p>
         <a class="btn btn--orange" href="/produtos/">Ver produtos</a>
       </div>
       <div class="panel">

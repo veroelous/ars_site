@@ -7,4 +7,12 @@ if (ars_noindex()) {
     echo "User-agent: *\nDisallow: /\n";
     exit;
 }
-echo "User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\n\nSitemap: " . ars_site_url() . "/sitemap.xml\n";
+$regras = "Allow: /\nDisallow: /api/\nDisallow: /admin/\n";
+echo "User-agent: *\n" . $regras . "\n";
+// Buscadores e assistentes de IA: acesso liberado de forma explícita.
+foreach (['Googlebot', 'Bingbot', 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-User', 'Claude-SearchBot', 'PerplexityBot', 'Google-Extended', 'Applebot-Extended'] as $bot) {
+    echo "User-agent: " . $bot . "\n";
+}
+echo $regras . "\n";
+echo "Sitemap: " . ars_site_url() . "/sitemap.xml\n";
+echo "# Resumo do site para IA: " . ars_site_url() . "/llms.txt\n";

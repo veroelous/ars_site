@@ -351,7 +351,7 @@ li {
   z-index: -2;
   background:
     linear-gradient(90deg, rgba(26, 22, 96, 0.84), rgba(26, 22, 96, 0.7) 42%, rgba(26, 22, 96, 0.45) 76%, rgba(26, 22, 96, 0.58)),
-    linear-gradient(180deg, rgba(26, 22, 96, 0.12), rgba(17, 14, 68, 0.78));
+    linear-gradient(180deg, var(--line), rgba(17, 14, 68, 0.78));
 }
 
 .hero__grid {
@@ -817,7 +817,7 @@ li {
 
 .ig-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 24px 60px rgba(26, 22, 96, 0.16);
+  box-shadow: 0 24px 60px var(--line);
 }
 
 .ig-card__media {
@@ -2310,3 +2310,70 @@ li {
 .finish--rs { background: #efa9a6; }
 .finish--ab { background: #b9c793; }
 .finish--cf { background: #77452d; border-color: #77452d; }
+
+/* Links para as outras linhas (página de categoria). */
+.line-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ars-navy);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.line-links a:hover,
+.line-links a:focus-visible {
+  border-color: var(--ars-orange-2);
+  color: var(--ars-orange-2);
+}
+
+/* Perguntas frequentes (Home). */
+.faq {
+  max-width: 860px;
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq__item summary {
+  padding: 18px 32px 18px 0;
+  position: relative;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.faq__item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq__item summary::after {
+  content: "+";
+  position: absolute;
+  right: 4px;
+  top: 14px;
+  font-size: 1.4rem;
+  color: var(--ars-orange-2);
+}
+
+.faq__item[open] summary::after {
+  content: "−";
+}
+
+.faq__item p {
+  margin: 0 0 18px;
+}

@@ -90,6 +90,13 @@ A skill reutilizável **catalogo-pdf-para-site** tem os scripts de extração de
 
 **Siglas de acabamento:** BR branco, PT preto, AL alumínio, CB cobre (por confirmar), DR dourado, CH/CP champagne. A paleta de 8 cores (Bronze AVL, Verde AVL, Preto, Pedra, Dourado, Champagne, Branco, Off White) usa as chaves internas BZ, VD, PT, PD, DR, CP, BR e OW. Cores extras da Iris: AZ Azul Bebê, RS Rosa, AB Abacate. CF (módulos de sobrepor, marrom) ainda sem nome: aparece como pendente.
 
+## SEO (manter ao criar páginas)
+
+- Cada página define `$page['seo_title']` (≤ 60 caracteres, com palavra-chave) e `description`; o `head.php` corta a descrição em 158 caracteres.
+- Imagens locais usam `img_dim($src)` para gravar `width`/`height`.
+- Categorias novas precisam de `'titulo'` em `ARS_CATEGORIAS`. Produtos entram sozinhos no sitemap, no `llms.txt` e nos links "Outros produtos".
+- Não crie FAQ, avaliações ou preços sem informação oficial: os dados estruturados também são conteúdo publicado.
+
 ## Commits
 
 Mensagens em português, descrevendo o que muda para o site. Trabalhe na branch `claude/wonderful-planck-dkgcrz`. Não abra PR sem pedido do usuário.

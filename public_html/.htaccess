@@ -7,6 +7,19 @@ ErrorDocument 404 /404.php
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # Endereço único: sempre HTTPS e sem "www" (evita conteúdo duplicado no Google).
+  # O HTTPS chega pelo proxy da Host4; X-Forwarded-Proto evita laço de redirecionamento.
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # /index.php e /pasta/index.php respondem pela URL com barra (sem duplicar páginas).
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.php[\s?]
+  RewriteRule ^(.*/)?index\.php$ /$1 [R=301,L]
+
   # Pastas internas nunca são servidas diretamente.
   RewriteRule ^(includes|private)(/|$) - [F,L]
 
@@ -27,6 +40,8 @@ ErrorDocument 404 /404.php
   # robots.txt e sitemap.xml gerados conforme o domínio (dev.* não é indexado).
   RewriteRule ^robots\.txt$ robots.php [L]
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
+  # Resumo do site para assistentes de IA (padrão llms.txt).
+  RewriteRule ^llms\.txt$ llms.php [L]
 </IfModule>
 
 # Arquivos que não devem ser baixados.

@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 $page = [
     'title'       => 'A ARS',
+    'seo_title'   => 'Sobre a ARS Iluminação | Fabricante em Socorro/SP',
     'description' => 'A ARS Iluminação foi fundada em 2014, em Socorro/SP, para criar e fabricar soluções de iluminação para diferentes projetos.',
     'path'        => '/a-ars/',
 ];
+require_once dirname(__DIR__) . '/includes/bootstrap.php';
+require_once dirname(__DIR__) . '/includes/produtos.php';
 require dirname(__DIR__) . '/includes/head.php';
 require dirname(__DIR__) . '/includes/header.php';
 
@@ -37,7 +40,7 @@ site_header('solid', '/a-ars/');
         <div class="kicker">Nossa história</div>
         <h2>Uma trajetória feita de luz, produto e parceria.</h2>
         <p>A ARS Iluminação foi fundada em 2014, em Socorro/SP, como fabricante de luminárias e perfis de LED. A produção é própria, e os produtos saem da fábrica com entrega para todo o Brasil.</p>
-        <p>Hoje o catálogo reúne nove linhas (perfis de LED, coleção Bonalux, arandelas, pendentes, embutidos, módulos de sobrepor, spots, jardim e vidros), com mais de 200 modelos. A ARS faz parte do Grupo ARS Iluminação, ao lado das marcas Bonalux e RSG.</p>
+        <p>Hoje o catálogo reúne nove linhas (<?= linhas_links(true) ?>), com mais de 200 modelos. A ARS faz parte do Grupo ARS Iluminação, ao lado das marcas Bonalux e RSG.</p>
         <a class="btn btn--orange" href="/produtos/">Ver as linhas de produto</a>
       </div>
       <figure class="photo-frame"><?= photo('lateral', 'Vista lateral da fábrica da ARS Iluminação') ?></figure>
@@ -70,7 +73,7 @@ site_header('solid', '/a-ars/');
           <a class="btn btn--orange" href="/contato-e-orcamento/">Solicitar atendimento</a>
           <a class="btn btn--ghost" href="/seja-revendedor/">Seja revendedor</a>
         </div>
-        <img class="cta-panel__img" src="/assets/img/produtos/colecao-bonalux/pendente-ferrara.webp" alt="" loading="lazy">
+        <img class="cta-panel__img" src="/assets/img/produtos/colecao-bonalux/pendente-ferrara.webp" alt=""<?= img_dim('/assets/img/produtos/colecao-bonalux/pendente-ferrara.webp') ?> loading="lazy">
       </div>
     </div>
   </section>

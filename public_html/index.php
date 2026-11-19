@@ -1,10 +1,43 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/includes/bootstrap.php';
+require_once __DIR__ . '/includes/site.php';
+require_once __DIR__ . '/includes/produtos.php';
+
+/*
+ * Perguntas frequentes: respostas só com informações já publicadas pela ARS (site, catálogo e
+ * Instagram). Também vão no JSON-LD FAQPage, que ajuda buscadores e assistentes de IA.
+ */
+$faq = [
+    ['Onde fica a ARS Iluminação?',
+     'A fábrica fica na ' . e(ARS_SITE['address']['street']) . ', ' . e(ARS_SITE['address']['detail']) . '. A ARS fabrica soluções de iluminação em Socorro/SP desde 2014. <a href="/a-ars/">Conheça a ARS</a>.'],
+    ['Quais produtos a ARS fabrica?',
+     'O catálogo tem nove linhas: ' . linhas_links(true) . '. <a href="/produtos/">Ver todos os produtos</a>.'],
+    ['A ARS entrega para todo o Brasil?',
+     'Sim. A ARS envia para todo o Brasil, com estoque para pronta entrega. Para orçamento, use a página de <a href="/contato-e-orcamento/">contato e orçamento</a> ou o WhatsApp.'],
+    ['Como revender produtos ARS na minha loja?',
+     'Lojistas e distribuidores fazem o cadastro na página <a href="/seja-revendedor/">Seja revendedor</a>. A equipe comercial entra em contato e apresenta as condições.'],
+    ['Onde comprar produtos ARS como consumidor final?',
+     'Na página <a href="/onde-comprar/">Onde comprar</a>, ou enviando sua cidade pelo WhatsApp para a equipe comercial indicar a loja mais próxima.'],
+    ['Como baixar o catálogo da ARS?',
+     'Preencha nome, WhatsApp e e-mail no formulário <a href="#catalogo">Catálogo ARS</a>, no topo desta página, e o download do PDF é liberado.'],
+];
+
 $page = [
     'title'       => '',
+    'seo_title'   => 'ARS Iluminação | Fabricante de luminárias e perfis de LED',
     'description' => 'ARS Iluminação: fabricante de soluções de iluminação em Socorro/SP, com entrega para todo o Brasil. Baixe o catálogo e fale com a equipe comercial.',
     'path'        => '/',
+    'jsonld'      => [[
+        '@context'   => 'https://schema.org',
+        '@type'      => 'FAQPage',
+        'mainEntity' => array_map(static fn($q) => [
+            '@type' => 'Question',
+            'name'  => $q[0],
+            'acceptedAnswer' => ['@type' => 'Answer', 'text' => html_entity_decode(strip_tags($q[1]), ENT_QUOTES, 'UTF-8')],
+        ], $faq),
+    ]],
     'preload'     => [[
         'href'   => '/assets/img/hero-ars-fachada-frontal.webp',
         'srcset' => '/assets/img/hero-ars-fachada-frontal-768.webp 768w, /assets/img/hero-ars-fachada-frontal.webp 1920w',
@@ -94,6 +127,28 @@ $igPosts = instagram_posts(3);
   </div>
 </section>
 
+<section class="section section--white" aria-labelledby="linhas-title">
+  <div class="wrap">
+    <div class="kicker">Linhas de produto</div>
+    <h2 id="linhas-title">Luminárias e perfis de LED de fabricação própria.</h2>
+    <p>Nove linhas para lojas, especificadores e instaladores, com ficha técnica, códigos e acabamentos de cada modelo.</p>
+    <div class="category-grid">
+      <?php foreach (ARS_CATEGORIAS as $slug => $cat): ?>
+        <a class="category-card" href="/produtos/<?= e($slug) ?>/">
+          <div class="category-card__img">
+            <img src="/assets/img/produtos/categorias/<?= e($cat['imagem']) ?>" alt="<?= e($cat['nome']) ?> ARS Iluminação"<?= img_dim('/assets/img/produtos/categorias/' . $cat['imagem']) ?> loading="lazy" decoding="async">
+          </div>
+          <div class="category-card__body">
+            <h3><?= e($cat['nome']) ?></h3>
+            <p><?= e($cat['resumo']) ?></p>
+            <span class="category-card__more">Ver <?= e(mb_strtolower($cat['nome'])) ?> <?= icon('arrow-up-right', 14) ?></span>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
 <section class="instagram" aria-labelledby="instagram-title">
   <div class="wrap">
     <div class="instagram__head">
@@ -130,6 +185,19 @@ $igPosts = instagram_posts(3);
         </div>
       <?php endforeach; endif; ?>
     </div>
+  </div>
+</section>
+
+<section class="section section--white" aria-labelledby="faq-title">
+  <div class="wrap faq">
+    <div class="kicker">Perguntas frequentes</div>
+    <h2 id="faq-title">Dúvidas sobre a ARS.</h2>
+    <?php foreach ($faq as [$pergunta, $resposta]): ?>
+      <details class="faq__item">
+        <summary><?= e($pergunta) ?></summary>
+        <p><?= $resposta ?></p>
+      </details>
+    <?php endforeach; ?>
   </div>
 </section>
 <?php require __DIR__ . '/includes/footer.php'; ?>

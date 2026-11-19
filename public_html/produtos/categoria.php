@@ -11,6 +11,11 @@ if (!$cat || empty($cat['online'])) {
     require dirname(__DIR__) . '/404.php';
     exit;
 }
+// Acesso direto ao arquivo (categoria.php?c=…): redireciona para a URL amigável.
+if (str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/produtos/categoria.php')) {
+    header('Location: /produtos/' . $slugCat . '/', true, 301);
+    exit;
+}
 
 $grupos = ars_produtos_por_tipo($slugCat);
 $tipos = ARS_TIPOS[$slugCat] ?? [];
@@ -37,7 +42,8 @@ $ctaImg = match ($slugCat) {
 
 $page = [
     'title'       => $cat['nome'],
-    'description' => $cat['descricao'] . ' Fabricante em Socorro/SP, com entrega para todo o Brasil.',
+    'seo_title'   => ($cat['titulo'] ?? $cat['nome']) . ' | ARS Iluminação',
+    'description' => $cat['descricao'] . ' Fabricante em Socorro/SP.',
     'path'        => '/produtos/' . $slugCat . '/',
     'image'       => '/assets/img/produtos/categorias/' . $cat['imagem'],
     'breadcrumbs' => [['Produtos', '/produtos/'], [$cat['nome'], '/produtos/' . $slugCat . '/']],
@@ -88,7 +94,7 @@ breadcrumbs($page['breadcrumbs']);
             <?php foreach ($itens as $slug => $p): ?>
               <a class="product-card" href="<?= e(produto_url($slug, $p)) ?>">
                 <div class="product-card__img">
-                  <img src="<?= e(produto_imagem($slug, $p)) ?>" alt="<?= e($p['nome']) ?> ARS" loading="lazy" decoding="async">
+                  <img src="<?= e(produto_imagem($slug, $p)) ?>" alt="<?= e($p['nome']) ?> ARS"<?= img_dim(produto_imagem($slug, $p)) ?> loading="lazy" decoding="async">
                 </div>
                 <h3><?= e($p['nome']) ?></h3>
                 <p class="product-card__spec"><?= e(produto_resumo($p)) ?></p>
@@ -104,6 +110,18 @@ breadcrumbs($page['breadcrumbs']);
     <?php endforeach; ?>
   </div>
 
+  <section class="section section--white" aria-labelledby="outras-linhas">
+    <div class="wrap reveal">
+      <div class="kicker">Outras linhas ARS</div>
+      <h2 id="outras-linhas">Conheça as outras linhas de produto.</h2>
+      <ul class="line-links">
+        <?php foreach (ARS_CATEGORIAS as $s => $c): if ($s === $slugCat) continue; ?>
+          <li><a href="/produtos/<?= e($s) ?>/"><?= e($c['nome']) ?> <?= icon('arrow-up-right', 14) ?></a></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  </section>
+
   <section class="section">
     <div class="wrap reveal">
       <div class="cta-panel">
@@ -114,7 +132,7 @@ breadcrumbs($page['breadcrumbs']);
           <a class="btn btn--orange" href="<?= e(produto_whatsapp('portfólio de ' . mb_strtolower($cat['nome']))) ?>" target="_blank" rel="noreferrer" data-track="whatsapp">Pedir orçamento</a>
           <a class="btn btn--ghost" href="/seja-revendedor/">Seja revendedor</a>
         </div>
-        <img class="cta-panel__img" src="<?= e($ctaImg) ?>" alt="" loading="lazy">
+        <img class="cta-panel__img" src="<?= e($ctaImg) ?>" alt=""<?= img_dim($ctaImg) ?> loading="lazy">
       </div>
     </div>
   </section>

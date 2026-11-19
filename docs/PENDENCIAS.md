@@ -75,6 +75,24 @@ Para o site poder ir ao ar mesmo sem retorno, as caixas pendentes das páginas i
   - Aparece um segundo telefone, (19) 99935-9225; falta definir se entra no site.
   - O e-mail impresso no catálogo é o `comercial@`, que foi descartado. Atualizar na próxima edição do PDF.
 
+## 3d. SEO técnico (19/11/2026)
+
+Feito no código; vale para o domínio final automaticamente.
+
+- **Títulos com palavra-chave** em todas as páginas (≤ 60 caracteres) e **meta descriptions** com até 158 caracteres (`seo_desc()`).
+- **Endereço único:** HTTP → HTTPS, `www` → sem `www`, `/index.php` → `/` e `produto.php?c=…` → URL amigável, todos com 301.
+- **Dados estruturados:** Organization (com fundação, contato comercial, marcas ARS e Bonalux), WebSite, BreadcrumbList, ItemList nas categorias, Product em cada produto (marca Bonalux na coleção) e **FAQPage** na Home.
+- **Links internos:** Home com as 9 linhas e perguntas frequentes; categorias com "Outras linhas"; cada produto liga aos 4 seguintes da linha (todo produto recebe ao menos 5 links); A ARS, Seja revendedor e Contato ligam às linhas.
+- **Imagens:** todas com `width`/`height` (sem salto de layout) e sitemap de imagens.
+- **IA:** `/llms.txt` com o resumo da empresa e a lista completa de produtos; `robots.txt` libera explicitamente GPTBot, ClaudeBot, PerplexityBot, Google-Extended e outros.
+- **Validar com a ARS:** as respostas das perguntas frequentes da Home (montadas só com informações já publicadas).
+
+**Para fazer na troca de domínio (precisa de acesso às contas):**
+1. Cadastrar `arsiluminacao.com.br` no **Google Search Console** e no **Bing Webmaster Tools** e enviar `/sitemap.xml`.
+2. Criar ou atualizar o **Perfil da Empresa no Google** (Google Meu Negócio) com o mesmo endereço, telefone e site. É o que mais pesa na busca local.
+3. Conferir que `site_url` no `config.php` é `https://arsiluminacao.com.br` (sem `www`).
+4. Redirecionar com 301 as URLs antigas do WordPress que tenham tráfego (ver relatório do Search Console do domínio antigo).
+
 ## 4. Credenciais e configuração de conta
 
 Tudo fica no `config.php` privado do servidor (modelo em `public_html/includes/config.example.php`), nunca no Git.

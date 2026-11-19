@@ -6,6 +6,7 @@ require_once dirname(__DIR__) . '/includes/produtos.php';
 
 $page = [
     'title'       => 'Produtos',
+    'seo_title'   => 'Catálogo de luminárias e perfis de LED | ARS Iluminação',
     'description' => 'Portfólio da ARS Iluminação: perfis de LED, coleção Bonalux, arandelas, pendentes, embutidos, módulos de sobrepor, spots, jardim e vidros. Fabricante em Socorro/SP.',
     'path'        => '/produtos/',
     'image'       => '/assets/img/produtos/categorias/perfis-de-led.webp',
@@ -38,7 +39,7 @@ site_header('solid', '/produtos/');
           <?php $online = !empty($cat['online']); ?>
           <a class="category-card<?= $online ? '' : ' category-card--catalog' ?>" href="<?= $online ? '/produtos/' . e($slug) . '/' : '/#catalogo' ?>">
             <div class="category-card__img">
-              <img src="/assets/img/produtos/categorias/<?= e($cat['imagem']) ?>" alt="<?= e($cat['nome']) ?> ARS Iluminação" loading="lazy" decoding="async">
+              <img src="/assets/img/produtos/categorias/<?= e($cat['imagem']) ?>" alt="<?= e($cat['nome']) ?> ARS Iluminação"<?= img_dim('/assets/img/produtos/categorias/' . $cat['imagem']) ?> loading="lazy" decoding="async">
             </div>
             <div class="category-card__body">
               <h3><?= e($cat['nome']) ?></h3>

@@ -9,21 +9,38 @@ require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/icons.php';
 
 $page = $page ?? [];
-$pageTitle = isset($page['title']) && $page['title'] !== ''
+// Título: 'seo_title' (completo) tem prioridade; senão "Título | ARS Iluminação".
+$pageTitle = $page['seo_title'] ?? (isset($page['title']) && $page['title'] !== ''
     ? $page['title'] . ' | ' . ARS_SITE['name']
-    : ARS_SITE['name'] . ' | ' . ARS_SITE['tagline'];
-$pageDescription = $page['description'] ?? ARS_SITE['description'];
+    : ARS_SITE['name'] . ' | ' . ARS_SITE['tagline']);
+$pageDescription = seo_desc($page['description'] ?? ARS_SITE['description']);
 $base = ars_site_url();
 $canonical = $base . ($page['path'] ?? '/');
 $ogImage = $base . ($page['image'] ?? '/assets/img/hero-ars-fachada-frontal.jpg');
+$ogImageAlt = $page['image_alt'] ?? ($page['title'] ?? ARS_SITE['name']);
 
 $orgJsonLd = [
     '@context' => 'https://schema.org',
     '@type'    => 'Organization',
+    '@id'      => $base . '/#organizacao',
     'name'     => ARS_SITE['name'],
     'url'      => $base . '/',
     'logo'     => $base . '/assets/img/ars-logo-colorido.webp',
+    'image'    => $base . '/assets/img/hero-ars-fachada-frontal.jpg',
+    'description' => 'Fabricante de luminárias e perfis de LED em Socorro/SP desde 2014, com entrega para todo o Brasil.',
+    'foundingDate' => '2014',
     'email'    => ARS_SITE['email'],
+    'telephone' => '+' . ARS_SITE['whatsapp']['number'],
+    'contactPoint' => [
+        '@type'       => 'ContactPoint',
+        'contactType' => 'sales',
+        'telephone'   => '+' . ARS_SITE['whatsapp']['number'],
+        'email'       => ARS_SITE['email'],
+        'areaServed'  => 'BR',
+        'availableLanguage' => 'Portuguese',
+    ],
+    'areaServed' => ['@type' => 'Country', 'name' => 'Brasil'],
+    'brand'    => [['@type' => 'Brand', 'name' => 'ARS Iluminação'], ['@type' => 'Brand', 'name' => 'Bonalux']],
     'sameAs'   => [ARS_SITE['instagram']['url']],
     'address'  => [
         '@type'           => 'PostalAddress',
@@ -40,9 +57,11 @@ if ($path === '/') {
     $jsonLd[] = [
         '@context' => 'https://schema.org',
         '@type'    => 'WebSite',
+        '@id'      => $base . '/#site',
         'name'     => ARS_SITE['name'],
         'url'      => $base . '/',
         'inLanguage' => 'pt-BR',
+        'publisher' => ['@id' => $base . '/#organizacao'],
     ];
 } elseif (!empty($page['title'])) {
     // Trilha: $page['breadcrumbs'] = [['Nome', '/caminho/'], ...] (sem o Início). Padrão: só a página atual.
@@ -69,13 +88,19 @@ $ga4 = preg_replace('/[^A-Z0-9\-]/', '', strtoupper((string) ars_config()['ga4_i
 <?php endif; ?>
 <link rel="canonical" href="<?= e($canonical) ?>">
 <meta name="theme-color" content="#1a1660">
-<meta property="og:type" content="website">
+<meta property="og:type" content="<?= e($page['og_type'] ?? 'website') ?>">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="<?= e(ARS_SITE['name']) ?>">
 <meta property="og:title" content="<?= e($pageTitle) ?>">
 <meta property="og:description" content="<?= e($pageDescription) ?>">
 <meta property="og:url" content="<?= e($canonical) ?>">
 <meta property="og:image" content="<?= e($ogImage) ?>">
+<meta property="og:image:alt" content="<?= e($ogImageAlt) ?>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= e($pageTitle) ?>">
+<meta name="twitter:description" content="<?= e($pageDescription) ?>">
+<meta name="twitter:image" content="<?= e($ogImage) ?>">
+<link rel="alternate" type="text/plain" title="Resumo do site para assistentes de IA" href="/llms.txt">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" href="/assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <?php if (!empty($page['preload'])): foreach ($page['preload'] as $pre): ?>

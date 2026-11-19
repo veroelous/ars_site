@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 $page = [
     'title'       => 'Contato e orçamento',
+    'seo_title'   => 'Contato e orçamento de luminárias | ARS Iluminação',
     'description' => 'Conte o que você precisa para seu projeto e a equipe comercial da ARS Iluminação retornará com as orientações adequadas.',
     'path'        => '/contato-e-orcamento/',
 ];
@@ -28,7 +29,7 @@ site_header('solid', '/contato-e-orcamento/');
       <h2>Vamos conversar sobre o seu projeto.</h2>
       <div class="contact-grid">
         <div class="panel panel--form">
-          <p>Atendemos lojistas, distribuidores, arquitetos, especificadores e instaladores. Conte o que você precisa (modelos, quantidades ou o projeto) e a equipe comercial retorna pelo WhatsApp ou e-mail informado.</p>
+          <p>Atendemos lojistas, distribuidores, arquitetos, especificadores e instaladores. Conte o que você precisa (modelos, quantidades ou o projeto) e a equipe comercial retorna pelo WhatsApp ou e-mail informado. Para escolher os modelos, consulte as <a href="/produtos/">linhas de produto</a>; se você tem loja, veja também como <a href="/seja-revendedor/">ser revendedor</a>.</p>
 
           <div class="contact-success" role="status"<?= $sent ? '' : ' hidden' ?>>
             <h3>Mensagem enviada.</h3>
@@ -92,7 +93,7 @@ site_header('solid', '/contato-e-orcamento/');
           <a class="btn btn--orange" href="mailto:<?= e(ARS_SITE['email']) ?>">Enviar e-mail</a>
           <a class="btn btn--ghost" href="<?= e(whatsapp_url()) ?>" target="_blank" rel="noreferrer" data-track="whatsapp">Chamar no WhatsApp</a>
         </div>
-        <img class="cta-panel__img" src="/assets/img/produtos/colecao-bonalux/pendente-piazza.webp" alt="" loading="lazy">
+        <img class="cta-panel__img" src="/assets/img/produtos/colecao-bonalux/pendente-piazza.webp" alt=""<?= img_dim('/assets/img/produtos/colecao-bonalux/pendente-piazza.webp') ?> loading="lazy">
       </div>
     </div>
   </section>

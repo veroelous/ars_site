@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 $page = [
     'title'       => 'Onde comprar',
+    'seo_title'   => 'Onde comprar produtos ARS | ARS Iluminação',
     'description' => 'Encontre uma loja que vende produtos ARS Iluminação perto de você, ou fale com a ARS para receber a indicação da revenda mais próxima.',
     'path'        => '/onde-comprar/',
 ];

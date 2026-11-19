@@ -70,6 +70,36 @@ function ars_noindex(): bool
     return (bool) ars_config()['noindex'] || str_starts_with($host, 'dev.');
 }
 
+/**
+ * Atributos width/height de uma imagem local (evita salto de layout, CLS).
+ * $src é o caminho público, ex.: /assets/img/produtos/spots/omega-1.webp.
+ */
+function img_dim(string $src): string
+{
+    static $cache = [];
+    if (!isset($cache[$src])) {
+        $file = dirname(__DIR__) . '/' . ltrim(parse_url($src, PHP_URL_PATH) ?? '', '/');
+        $info = is_file($file) ? @getimagesize($file) : false;
+        $cache[$src] = $info ? ' width="' . $info[0] . '" height="' . $info[1] . '"' : '';
+    }
+    return $cache[$src];
+}
+
+/** Resume um texto para meta description: até $max caracteres, cortando em fim de palavra. */
+function seo_desc(string $text, int $max = 158): string
+{
+    $text = trim(preg_replace('/\s+/', ' ', $text));
+    if (mb_strlen($text) <= $max) {
+        return $text;
+    }
+    $cut = mb_substr($text, 0, $max - 1);
+    $dot = mb_strrpos($cut, '. ');
+    if ($dot !== false && $dot > $max * 0.6) {
+        return mb_substr($cut, 0, $dot + 1);
+    }
+    return rtrim(mb_substr($cut, 0, (int) mb_strrpos($cut, ' ')), ' ,;:·') . '…';
+}
+
 /** Escapa texto para HTML. */
 function e(?string $value): string
 {

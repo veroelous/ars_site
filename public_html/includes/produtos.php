@@ -28,6 +28,7 @@ const ARS_ACABAMENTOS_PERFIL = ['BR' => 'Branco', 'PT' => 'Preto', 'AL' => 'Alum
  */
 const ARS_CATEGORIAS = [
     'perfis-de-led' => [
+        'titulo'    => 'Perfis de LED de alumínio para fita de LED',
         'nome'      => 'Perfis de LED',
         'resumo'    => 'Perfis de alumínio para fita de LED: sobrepor, embutir, canto e piso.',
         'descricao' => 'Perfis de alumínio para fita de LED nas versões de sobrepor, embutir, canto e piso, nos acabamentos branco, preto e alumínio, com comprimentos de 1, 2 e 3 metros.',
@@ -36,6 +37,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'colecao-bonalux' => [
+        'titulo'    => 'Coleção Bonalux de luminárias com LED',
         'nome'      => 'Coleção Bonalux',
         'resumo'    => 'Linhas decorativas da coleção Bonalux, do Grupo ARS.',
         'descricao' => 'Pendentes, plafons e arandelas com LED integrado da coleção Bonalux, do Grupo ARS, em alumínio e na paleta de 8 cores.',
@@ -44,6 +46,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'arandelas' => [
+        'titulo'    => 'Arandelas de parede E27, G9 e GU10',
         'nome'      => 'Arandelas',
         'resumo'    => 'Arandelas para parede em diversos modelos e acabamentos.',
         'descricao' => 'Arandelas de parede com globo, cúpula ou lâmpada aparente, para soquetes E27, G9 e GU10, em diversos acabamentos.',
@@ -52,6 +55,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'pendentes' => [
+        'titulo'    => 'Pendentes decorativos E27, G9 e GU10',
         'nome'      => 'Pendentes',
         'resumo'    => 'Pendentes, trilhos e arandelas em linhas com desenho próprio.',
         'descricao' => 'Pendentes, trilhos e arandelas organizados em linhas com desenho próprio, para soquetes E27, G9 e GU10, em diversos acabamentos.',
@@ -60,6 +64,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'embutidos' => [
+        'titulo'    => 'Spots de embutir em ABS e alumínio',
         'nome'      => 'Embutidos',
         'resumo'    => 'Spots de embutir em ABS e alumínio, de 1 a 4 focos.',
         'descricao' => 'Spots de embutir em ABS com tratamento UV e em alumínio (linha Axis), de 1 a 4 focos, para lâmpadas MR11, MR16, AR70 e PAR20, nos acabamentos preto e branco.',
@@ -68,6 +73,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'modulos-de-sobrepor' => [
+        'titulo'    => 'Módulos de sobrepor quadrados e cilíndricos',
         'nome'      => 'Módulos de sobrepor',
         'resumo'    => 'Módulos quadrados e cilíndricos de sobrepor, de 1 a 4 focos.',
         'descricao' => 'Módulos de sobrepor quadrados (Kube), cilíndricos (Tube) e em alumínio com 1 a 4 focos (linha Apex), para lâmpadas MR16, AR70 e PAR20, em três acabamentos.',
@@ -76,6 +82,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'spots' => [
+        'titulo'    => 'Spots de sobrepor e spots para trilho',
         'nome'      => 'Spots',
         'resumo'    => 'Spots de sobrepor de 1 a 4 focos, com base redonda ou trilho.',
         'descricao' => 'Spots de sobrepor em versões de 1 a 4 focos, com base redonda ou trilho, para soquete E27, GU10 ou E27/PAR20, em acabamentos branco, cobre, preto e alumínio (conforme o modelo).',
@@ -84,6 +91,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'jardim' => [
+        'titulo'    => 'Iluminação de jardim: espetos e balizadores',
         'nome'      => 'Jardim',
         'resumo'    => 'Espetos, balizadores e arandelas para áreas externas.',
         'descricao' => 'Espetos e embutidos de solo IP65 (Garden), balizadores em alumínio (Oak, Alloy e Aris), arandelas e plafonier para jardins, caminhos e áreas externas.',
@@ -92,6 +100,7 @@ const ARS_CATEGORIAS = [
         'online'    => true,
     ],
     'vidros' => [
+        'titulo'    => 'Arandelas e plafons de vidro decorado',
         'nome'      => 'Vidros',
         'resumo'    => 'Peças com vidro decorado em diversos padrões.',
         'descricao' => 'Arandelas e plafons de vidro decorado, em padrões como Bamboo, Risk, Cadence e Orion, para soquete E27.',
@@ -270,6 +279,47 @@ function linha(string $nome, string $grupo, int $pagina, array $base, array $ite
         'pagina'      => $pagina,
         'observacao'  => $base['observacao'] ?? null,
     ] + (isset($base['destaques']) ? ['destaques' => $base['destaques']] : []);
+}
+
+/**
+ * Até $n produtos da mesma categoria que vêm logo depois de $slug na ordem da página da categoria
+ * (volta ao início ao chegar no fim). Assim todo produto recebe links de outros produtos.
+ */
+function produtos_vizinhos(string $slug, int $n = 4): array
+{
+    $p = ars_produtos()[$slug];
+    $lista = array_merge(...array_values(ars_produtos_por_tipo($p['categoria'])));
+    $slugs = array_keys($lista);
+    $i = array_search($slug, $slugs, true);
+    $out = [];
+    for ($k = 1; $k <= min($n, count($slugs) - 1); $k++) {
+        $s = $slugs[($i + $k) % count($slugs)];
+        $out[$s] = $lista[$s];
+    }
+    return $out;
+}
+
+/**
+ * As 9 linhas do catálogo como links, separadas por vírgula e "e" (texto corrido com links internos).
+ * $minuscula: nomes em minúscula (mantém "LED" e "Bonalux").
+ */
+function linhas_links(bool $minuscula = false): string
+{
+    $links = [];
+    foreach (ARS_CATEGORIAS as $slug => $c) {
+        $nome = $minuscula ? str_replace(['led', 'bonalux'], ['LED', 'Bonalux'], mb_strtolower($c['nome'])) : $c['nome'];
+        $links[] = '<a href="/produtos/' . e($slug) . '/">' . e($nome) . '</a>';
+    }
+    $ultimo = array_pop($links);
+    return implode(', ', $links) . ' e ' . $ultimo;
+}
+
+/** Título SEO de produto: "Nome | Categoria | ARS Iluminação" (ou sem a categoria, se passar de 60 caracteres). */
+function produto_titulo_seo(array $p): string
+{
+    $cat = ARS_CATEGORIAS[$p['categoria']]['nome'];
+    $t = $p['nome'] . ' | ' . $cat . ' | ARS Iluminação';
+    return mb_strlen($t) <= 60 ? $t : $p['nome'] . ' | ARS Iluminação';
 }
 
 /** Produtos por slug (o slug é a URL: /produtos/<categoria>/<slug>/). */
@@ -706,7 +756,9 @@ function ars_produtos(): array
     // Vidros: catálogo p. 66 (arandelas) e 67 (plafons redondos e quadrados).
     $vd = ['categoria' => 'vidros', 'material' => 'Vidro', 'soquete' => 'E27', 'acabamentos' => []];
     $arv = static fn(string $nome, string $codigo, string $img)
-        => linha('Arandela de vidro ' . $nome, 'arandelas', 66, $vd, [['Arandela', $nome, $codigo, ['Dimensões' => '100 × 180 mm'], $img]]);
+        => linha('Arandela de vidro ' . $nome, 'arandelas', 66, $vd + [
+            'descricao' => 'Arandela de parede com vidro curvo decorado no padrão ' . $nome . ', 100 × 180 mm, para lâmpada com soquete E27.',
+        ], [['Arandela', $nome, $codigo, ['Dimensões' => '100 × 180 mm'], $img]]);
     $plv = static function (string $nome, string $forma, array $codigos, string $img) use ($vd): array {
         $redondo = $forma === 'redondo';
         $versoes = [];

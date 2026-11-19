@@ -13,6 +13,11 @@ if (!$p) {
     require dirname(__DIR__) . '/404.php';
     exit;
 }
+// Acesso direto ao arquivo (produto.php?c=…&p=…): redireciona para a URL amigável.
+if (str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/produtos/produto.php')) {
+    header('Location: ' . produto_url($slug, $p), true, 301);
+    exit;
+}
 
 $isSpot = $p['categoria'] === 'spots';
 $isFamilia = isset($p['versoes']);
@@ -79,15 +84,15 @@ if ($isFamilia) {
     ];
 }
 
-// Outros produtos do mesmo grupo (até 4).
-$relacionados = array_slice(array_filter(
-    ars_produtos(),
-    static fn($r, $s) => $s !== $slug && $r['categoria'] === $p['categoria'] && $r['tipo'] === $p['tipo'],
-    ARRAY_FILTER_USE_BOTH
-), 0, 4, true);
+// Outros produtos da categoria: os 4 seguintes na ordem da categoria (todo produto recebe links).
+$relacionados = produtos_vizinhos($slug);
 
+$marca = $p['categoria'] === 'colecao-bonalux' ? 'Bonalux' : 'ARS Iluminação';
 $page = [
     'title'       => $p['nome'],
+    'seo_title'   => produto_titulo_seo($p),
+    'og_type'     => 'product',
+    'image_alt'   => $p['nome'] . ' ' . $marca,
     'description' => $descricao,
     'path'        => $url,
     'image'       => $img,
@@ -95,13 +100,19 @@ $page = [
     'jsonld'      => [[
         '@context'     => 'https://schema.org',
         '@type'        => 'Product',
+        '@id'          => ars_site_url() . $url . '#produto',
+        'url'          => ars_site_url() . $url,
         'name'         => $p['nome'],
         'description'  => $descricao,
-        'image'        => ars_site_url() . $img,
-        'brand'        => ['@type' => 'Brand', 'name' => 'ARS Iluminação'],
-        'manufacturer' => ['@type' => 'Organization', 'name' => 'ARS Iluminação'],
+        'image'        => array_values(array_unique(array_merge([ars_site_url() . $img], array_map(
+            static fn($v) => ars_site_url() . '/assets/img/produtos/' . $p['categoria'] . '/' . $v['imagem'] . '.webp',
+            $p['versoes'] ?? []
+        )))),
+        'brand'        => ['@type' => 'Brand', 'name' => $marca],
+        'manufacturer' => ['@id' => ars_site_url() . '/#organizacao'],
         'category'     => $cat['nome'],
         'mpn'          => $codigos[0] ?? null,
+        'sku'          => $codigos[0] ?? null,
         'additionalProperty' => $props,
     ]],
 ];
@@ -115,7 +126,7 @@ breadcrumbs($page['breadcrumbs']);
   <section class="product-hero">
     <div class="wrap product-hero__inner">
       <div class="product-hero__img">
-        <img src="<?= e($img) ?>" alt="<?= e($p['nome']) ?> ARS Iluminação" fetchpriority="high">
+        <img src="<?= e($img) ?>" alt="<?= e($p['nome'] . ' ' . $marca) ?>"<?= img_dim($img) ?> fetchpriority="high">
       </div>
       <div class="product-hero__info">
         <div class="kicker"><?= e($cat['nome']) ?> · <?= e($isFamilia ? soquete_rotulo($p['soquete']) : ucfirst($p['tipo'])) ?></div>
@@ -168,7 +179,7 @@ breadcrumbs($page['breadcrumbs']);
       <div class="variant-grid">
         <?php foreach ($p['versoes'] as $v): ?>
           <article class="variant-card">
-            <div class="product-card__img"><img src="/assets/img/produtos/<?= e($p['categoria']) ?>/<?= e($v['imagem']) ?>.webp" alt="<?= e($v['nome']) ?> ARS" loading="lazy" decoding="async"></div>
+            <div class="product-card__img"><?php $vsrc = '/assets/img/produtos/' . $p['categoria'] . '/' . $v['imagem'] . '.webp'; ?><img src="<?= e($vsrc) ?>" alt="<?= e($v['nome']) ?> ARS"<?= img_dim($vsrc) ?> loading="lazy" decoding="async"></div>
             <?php if (isset($v['tipo'])): ?><div class="variant-type"><?= e($v['tipo']) ?></div><?php endif; ?>
             <h3><?= e($v['nome']) ?></h3>
             <dl class="variant-specs">
@@ -263,7 +274,7 @@ breadcrumbs($page['breadcrumbs']);
       <div class="product-grid">
         <?php foreach ($relacionados as $rs => $r): ?>
           <a class="product-card" href="<?= e(produto_url($rs, $r)) ?>">
-            <div class="product-card__img"><img src="<?= e(produto_imagem($rs, $r)) ?>" alt="<?= e($r['nome']) ?> ARS" loading="lazy" decoding="async"></div>
+            <div class="product-card__img"><img src="<?= e(produto_imagem($rs, $r)) ?>" alt="<?= e($r['nome']) ?> ARS"<?= img_dim(produto_imagem($rs, $r)) ?> loading="lazy" decoding="async"></div>
             <h3><?= e($r['nome']) ?></h3>
             <p class="product-card__spec"><?= e(produto_resumo($r)) ?></p>
             <span class="product-card__more"><?= $isSpot ? 'Ver versões' : ($isFamilia ? 'Ver detalhes' : 'Ver ficha técnica') ?> <?= icon('arrow-up-right', 14) ?></span>
